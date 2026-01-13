@@ -1,9 +1,12 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #include "pcapplusplus/include/PcapLiveDeviceList.h"
 #include "pcapplusplus/include/PcapLiveDevice.h"
 #include "pcapplusplus/include/SystemUtils.h"
+#include "pcapplusplus/include/Packet.h"
 
 #include "args/args.hxx"
 
@@ -52,7 +55,10 @@ bool setup_arguments(int argc, char** argv, AppOptions& options) {
     return true;
 }
 
-
+static void onPacketArrive(pcpp::RawPacket* rawPacket, pcpp::PcapLiveDevice* dev, void*) {
+    pcpp::Packet packet(rawPacket);
+    std::cout << "Packet captured: " << packet << std::endl;
+}
 
 int main(int argc, char** argv) {
     
@@ -77,5 +83,24 @@ int main(int argc, char** argv) {
     }
     
     auto* pcap_dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(devices[0]->getName());
+    
+    if (!pcap_dev) {
+        std::cerr << "Cannot find any network devices." << std::endl;
+        return 1;
+    }
+
+    // Opens the socket via pcap
+    if (!pcap_dev->open()) {
+        std::cerr << "Cannot open the pcap device." << std::endl;
+        return 1;
+    }
+    
+    pcap_dev->setFilter("tcp");
+    pcap_dev->startCapture(onPacketArrive, nullptr);
+    
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+    pcap_dev->stopCapture();
+    pcap_dev->close();
     
 }
