@@ -52,6 +52,8 @@ bool setup_arguments(int argc, char** argv, AppOptions& options) {
     return true;
 }
 
+
+
 int main(int argc, char** argv) {
     
     AppOptions options;
@@ -64,11 +66,16 @@ int main(int argc, char** argv) {
         std::cout << "Verbose flag detected" << std::endl;
     }
 
+    // Get all devices. The first one will be the closest hit.
     auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
+
     if (options.verbose) {
         std::cout << "Detected network devices: " << std::endl;
         for (auto iter = devices.begin(); iter != devices.end(); iter++) {
             std::cout << (*iter)->getName() << std::endl;
         }
     }
+    
+    auto* pcap_dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(devices[0]->getName());
+    
 }
