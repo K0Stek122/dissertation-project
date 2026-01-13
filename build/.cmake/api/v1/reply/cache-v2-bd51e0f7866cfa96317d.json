@@ -1227,7 +1227,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "PCPP_COMMON-NOTFOUND"
+			"value" : "/home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libCommon++.a"
 		},
 		{
 			"name" : "PCPP_PACKET",
@@ -1239,7 +1239,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "PCPP_PACKET-NOTFOUND"
+			"value" : "/home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPacket++.a"
 		},
 		{
 			"name" : "PCPP_PCAP",
@@ -1251,19 +1251,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "PCPP_PCAP-NOTFOUND"
-		},
-		{
-			"name" : "PcapPlusPlus_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "The directory containing a CMake configuration file for PcapPlusPlus."
-				}
-			],
-			"type" : "PATH",
-			"value" : "PcapPlusPlus_DIR-NOTFOUND"
+			"value" : "/home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPcap++.a"
 		},
 		{
 			"name" : "_CMAKE_CXX_LINKER_PUSHPOP_STATE_SUPPORTED",

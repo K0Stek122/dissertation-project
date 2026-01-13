@@ -14,12 +14,12 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(ids-dissertation ${SOURCES})
 
 target_include_directories(ids-dissertation PRIVATE ${CMAKE_SOURCE_DIR}/src/pcapplusplus/include)
-set(PCPP_LIB_DIR "${CMAKE_SOURCE_DIR}/pcapplusplus/lib/")
-find_library(PCPP_PCAP NAMES Pcap++ PATHS ${PCPP_LIB_DIR} REQUIRED)
-find_library(PCPP_PACKET NAMES Packet++ PATHS ${PCPP_LIB_DIR} REQUIRED)
-find_library(PCPP_COMMON NAMES Common++ PATHS ${PCPP_LIB_DIR} REQUIRED)
+set(PCPP_LIB_DIR "${CMAKE_SOURCE_DIR}/src/pcapplusplus/lib/")
+find_library(PCPP_PCAP NAMES pcap++ Pcap++ PATHS ${PCPP_LIB_DIR} REQUIRED)
+find_library(PCPP_PACKET NAMES packet++ Packet++ PATHS ${PCPP_LIB_DIR} REQUIRED)
+find_library(PCPP_COMMON NAMES common++ Common++ PATHS ${PCPP_LIB_DIR} REQUIRED)
 
-target_link_libraries(ids-dissertation, PRIVATE
+target_link_libraries(ids-dissertation PRIVATE
     ${PCPP_PCAP} 
     ${PCPP_PACKET}
     ${PCPP_COMMON} 

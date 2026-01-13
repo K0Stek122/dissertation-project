@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include "include/pcapplusplus/PcapLiveDeviceList.h"
-#include "include/pcapplusplus/PcapLiveDevice.h"
-#include "include/pcapplusplus/SystemUtils.h"
+#include "pcapplusplus/include/PcapLiveDeviceList.h"
+#include "pcapplusplus/include/PcapLiveDevice.h"
+#include "pcapplusplus/include/SystemUtils.h"
 
 int main(int, char**) {
     auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
