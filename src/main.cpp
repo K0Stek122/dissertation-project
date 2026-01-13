@@ -55,6 +55,15 @@ bool setup_arguments(int argc, char** argv, AppOptions& options) {
     return true;
 }
 
+/*
+This is a very simple implementation. The next step is to implement a few more things. We need to do the following:
+- Capture - Capture the packets with the eBPF filter and network devices.
+- Decode - Turn the raw packets into structured events that we can properly analyse
+- Detect - Detect the packets with pluggable extendable detectors
+- Output - Pluggable functions like output to JSON, SQLite, or Message queues.
+- Config - Self explanatory.
+
+*/
 static void onPacketArrive(pcpp::RawPacket* rawPacket, pcpp::PcapLiveDevice* dev, void*) {
     pcpp::Packet packet(rawPacket);
     std::cout << "Packet captured: " << packet << std::endl;
