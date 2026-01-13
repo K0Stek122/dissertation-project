@@ -1218,6 +1218,54 @@
 			"value" : "FALSE"
 		},
 		{
+			"name" : "PCPP_COMMON",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "PCPP_COMMON-NOTFOUND"
+		},
+		{
+			"name" : "PCPP_PACKET",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "PCPP_PACKET-NOTFOUND"
+		},
+		{
+			"name" : "PCPP_PCAP",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "PCPP_PCAP-NOTFOUND"
+		},
+		{
+			"name" : "PcapPlusPlus_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for PcapPlusPlus."
+				}
+			],
+			"type" : "PATH",
+			"value" : "PcapPlusPlus_DIR-NOTFOUND"
+		},
+		{
 			"name" : "_CMAKE_CXX_LINKER_PUSHPOP_STATE_SUPPORTED",
 			"properties" : 
 			[

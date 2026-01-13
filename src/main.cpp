@@ -1,14 +1,15 @@
 #include <iostream>
-#include "check_dependencies.h"
+#include <vector>
 
-int main(int, char**){
+#include "include/pcapplusplus/PcapLiveDeviceList.h"
+#include "include/pcapplusplus/PcapLiveDevice.h"
+#include "include/pcapplusplus/SystemUtils.h"
 
-    std::string distro = get_linux_distribution();
-    // TODO: Support more distributions.
-    if (distro != "fedora") {
-        std::cout << "Error: Unsupported distribution: " << distro << ". Please use one of supported distributions: fedora" << std::endl;
-        return 1;
-    }
+int main(int, char**) {
+    auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
+    std::vector<pcpp::PcapLiveDevice*>::iterator iter;
     
-
+    for (iter = devices.begin(); iter != devices.end(); iter++) {
+        std::cout << *iter << std::endl;        
+    }
 }
