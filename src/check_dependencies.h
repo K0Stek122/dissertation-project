@@ -1,0 +1,1 @@
+std::string get_linux_distribution();

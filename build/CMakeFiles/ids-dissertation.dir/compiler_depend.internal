@@ -3,6 +3,7 @@
 
 CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o
  /home/kostek/Documents/Programming/dissertation/src/check_dependencies.cpp
+ /home/kostek/Documents/Programming/dissertation/src/check_dependencies.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
@@ -148,6 +149,7 @@ CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o
 
 CMakeFiles/ids-dissertation.dir/src/main.cpp.o
  /home/kostek/Documents/Programming/dissertation/src/main.cpp
+ /home/kostek/Documents/Programming/dissertation/src/check_dependencies.h
  /usr/include/alloca.h
  /usr/include/asm-generic/bitsperlong.h
  /usr/include/asm-generic/errno-base.h
