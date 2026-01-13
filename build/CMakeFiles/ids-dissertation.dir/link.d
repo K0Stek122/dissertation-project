@@ -4,6 +4,11 @@ ids-dissertation: \
   /usr/lib/gcc/x86_64-redhat-linux/15/crtbegin.o \
   CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o \
   CMakeFiles/ids-dissertation.dir/src/main.cpp.o \
+  /home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPcap++.a \
+  /home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPacket++.a \
+  /home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libCommon++.a \
+  /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libpcap.so \
+  /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libpthread.a \
   /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libm.so \
@@ -30,7 +35,10 @@ ids-dissertation: \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc.a \
   /usr/lib/gcc/x86_64-redhat-linux/15/crtend.o \
   /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/crtn.o \
-  /lib64/ld-linux-x86-64.so.2
+  /usr/lib64/libibverbs.so.1 \
+  /lib64/ld-linux-x86-64.so.2 \
+  /usr/lib64/libnl-route-3.so.200 \
+  /usr/lib64/libnl-3.so.200
 
 /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/crt1.o:
 
@@ -41,6 +49,16 @@ ids-dissertation: \
 CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o:
 
 CMakeFiles/ids-dissertation.dir/src/main.cpp.o:
+
+/home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPcap++.a:
+
+/home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPacket++.a:
+
+/home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libCommon++.a:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libpcap.so:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/libpthread.a:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/libstdc++.so:
 
@@ -94,4 +112,10 @@ CMakeFiles/ids-dissertation.dir/src/main.cpp.o:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/../../../../lib64/crtn.o:
 
+/usr/lib64/libibverbs.so.1:
+
 /lib64/ld-linux-x86-64.so.2:
+
+/usr/lib64/libnl-route-3.so.200:
+
+/usr/lib64/libnl-3.so.200:
