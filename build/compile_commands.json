@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/kostek/Documents/Programming/dissertation/build",
+  "command": "/usr/bin/c++   -g -Wall -Wextra -Wpedantic -o CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o -c /home/kostek/Documents/Programming/dissertation/src/check_dependencies.cpp",
+  "file": "/home/kostek/Documents/Programming/dissertation/src/check_dependencies.cpp",
+  "output": "CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o"
+},
+{
+  "directory": "/home/kostek/Documents/Programming/dissertation/build",
+  "command": "/usr/bin/c++   -g -Wall -Wextra -Wpedantic -o CMakeFiles/ids-dissertation.dir/src/main.cpp.o -c /home/kostek/Documents/Programming/dissertation/src/main.cpp",
+  "file": "/home/kostek/Documents/Programming/dissertation/src/main.cpp",
+  "output": "CMakeFiles/ids-dissertation.dir/src/main.cpp.o"
+}
+]
