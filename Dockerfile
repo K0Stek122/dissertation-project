@@ -21,5 +21,5 @@ COPY CMakeLists.txt .
 RUN cmake -S . -B build \
 && cmake --build build --config Release
 
-CMD [ "build/ids-dissertation" ]
+CMD [ "build/ids-dissertation", "-h" ]
 EXPOSE 3000
