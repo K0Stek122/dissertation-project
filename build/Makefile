@@ -129,6 +129,30 @@ ids-dissertation/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ids-dissertation.dir/build.make CMakeFiles/ids-dissertation.dir/build
 .PHONY : ids-dissertation/fast
 
+src/Sniffer.o: src/Sniffer.cpp.o
+.PHONY : src/Sniffer.o
+
+# target to build an object file
+src/Sniffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ids-dissertation.dir/build.make CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o
+.PHONY : src/Sniffer.cpp.o
+
+src/Sniffer.i: src/Sniffer.cpp.i
+.PHONY : src/Sniffer.i
+
+# target to preprocess a source file
+src/Sniffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ids-dissertation.dir/build.make CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.i
+.PHONY : src/Sniffer.cpp.i
+
+src/Sniffer.s: src/Sniffer.cpp.s
+.PHONY : src/Sniffer.s
+
+# target to generate assembly for a file
+src/Sniffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ids-dissertation.dir/build.make CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.s
+.PHONY : src/Sniffer.cpp.s
+
 src/check_dependencies.o: src/check_dependencies.cpp.o
 .PHONY : src/check_dependencies.o
 
@@ -186,6 +210,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... ids-dissertation"
+	@echo "... src/Sniffer.o"
+	@echo "... src/Sniffer.i"
+	@echo "... src/Sniffer.s"
 	@echo "... src/check_dependencies.o"
 	@echo "... src/check_dependencies.i"
 	@echo "... src/check_dependencies.s"

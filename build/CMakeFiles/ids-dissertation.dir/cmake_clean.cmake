@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ids-dissertation.dir/link.d"
+  "CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o"
+  "CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o.d"
   "CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o"
   "CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o.d"
   "CMakeFiles/ids-dissertation.dir/src/main.cpp.o"

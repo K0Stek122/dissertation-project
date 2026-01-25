@@ -72,10 +72,24 @@ include CMakeFiles/ids-dissertation.dir/flags.make
 CMakeFiles/ids-dissertation.dir/codegen:
 .PHONY : CMakeFiles/ids-dissertation.dir/codegen
 
+CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o: CMakeFiles/ids-dissertation.dir/flags.make
+CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o: /home/kostek/Documents/Programming/dissertation/src/Sniffer.cpp
+CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o: CMakeFiles/ids-dissertation.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o -MF CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o.d -o CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o -c /home/kostek/Documents/Programming/dissertation/src/Sniffer.cpp
+
+CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kostek/Documents/Programming/dissertation/src/Sniffer.cpp > CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.i
+
+CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kostek/Documents/Programming/dissertation/src/Sniffer.cpp -o CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.s
+
 CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o: CMakeFiles/ids-dissertation.dir/flags.make
 CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o: /home/kostek/Documents/Programming/dissertation/src/check_dependencies.cpp
 CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o: CMakeFiles/ids-dissertation.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o -MF CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o.d -o CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o -c /home/kostek/Documents/Programming/dissertation/src/check_dependencies.cpp
 
 CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.i: cmake_force
@@ -89,7 +103,7 @@ CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.s: cmake_force
 CMakeFiles/ids-dissertation.dir/src/main.cpp.o: CMakeFiles/ids-dissertation.dir/flags.make
 CMakeFiles/ids-dissertation.dir/src/main.cpp.o: /home/kostek/Documents/Programming/dissertation/src/main.cpp
 CMakeFiles/ids-dissertation.dir/src/main.cpp.o: CMakeFiles/ids-dissertation.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ids-dissertation.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ids-dissertation.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ids-dissertation.dir/src/main.cpp.o -MF CMakeFiles/ids-dissertation.dir/src/main.cpp.o.d -o CMakeFiles/ids-dissertation.dir/src/main.cpp.o -c /home/kostek/Documents/Programming/dissertation/src/main.cpp
 
 CMakeFiles/ids-dissertation.dir/src/main.cpp.i: cmake_force
@@ -102,12 +116,14 @@ CMakeFiles/ids-dissertation.dir/src/main.cpp.s: cmake_force
 
 # Object files for target ids-dissertation
 ids__dissertation_OBJECTS = \
+"CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o" \
 "CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o" \
 "CMakeFiles/ids-dissertation.dir/src/main.cpp.o"
 
 # External object files for target ids-dissertation
 ids__dissertation_EXTERNAL_OBJECTS =
 
+ids-dissertation: CMakeFiles/ids-dissertation.dir/src/Sniffer.cpp.o
 ids-dissertation: CMakeFiles/ids-dissertation.dir/src/check_dependencies.cpp.o
 ids-dissertation: CMakeFiles/ids-dissertation.dir/src/main.cpp.o
 ids-dissertation: CMakeFiles/ids-dissertation.dir/build.make
@@ -116,7 +132,7 @@ ids-dissertation: /home/kostek/Documents/Programming/dissertation/src/pcappluspl
 ids-dissertation: /home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libPacket++.a
 ids-dissertation: /home/kostek/Documents/Programming/dissertation/src/pcapplusplus/lib/libCommon++.a
 ids-dissertation: CMakeFiles/ids-dissertation.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ids-dissertation"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/kostek/Documents/Programming/dissertation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable ids-dissertation"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ids-dissertation.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
