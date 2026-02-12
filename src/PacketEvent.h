@@ -13,6 +13,11 @@
 
 // HEADER ONLY
 
+struct IPHeader {
+    uint16_t checksum = 0;
+    uint8_t timeToLive = 0;
+};
+
 // This is packet metadata
 struct Flow {
     pcpp::IPAddress srcIp;
@@ -25,6 +30,8 @@ struct Flow {
 // This will be an event for packets instead of processing raw packets everywhere
 struct PacketEvent {
     Flow flow;
+    IPHeader ipHeader;
     std::size_t length = 0;
     std::chrono::system_clock::time_point timestamp = {}; // This returns the system clock at which point the packet arrived.
+    std::string tcpFlags = "";
 };

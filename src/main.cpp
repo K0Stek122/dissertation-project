@@ -11,6 +11,8 @@
 #include "args/args.hxx"
 
 #include "PacketEvent.h"
+#include "Sniffer.h"
+#include "PacketCapture.h"
 
 struct AppOptions {
     bool verbose = false;
@@ -66,8 +68,14 @@ This is a very simple implementation. The next step is to implement a few more t
 - Config - Self explanatory.
 
 */
-static void packet_arrive(const PacketEvent& event) {
-
+void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
+    PacketCapture p_capture;
+    PacketEvent captured_packet = p_capture.capture("", packet);
+    if (!packet || !device) {
+        return;
+    }
+    
+    std::cout << captured_packet.flow.dstIp << std::endl;
 }
 
 int main(int argc, char** argv) {
@@ -82,6 +90,15 @@ int main(int argc, char** argv) {
     if (options.verbose) {
         std::cout << "info: Verbose flag detected" << std::endl;
     }
+
+    Sniffer sniffer;
+    sniffer.start(onPacketArrive, "wlp0s20f3", "tcp");
+    while (true) {
+        
+
+        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+    }
+    sniffer.stop();
     
     // Get all devices. The first one will be the closest hit.
     // auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
@@ -100,7 +117,7 @@ int main(int argc, char** argv) {
     //     return 1;
     // }
 
-    // // Opens the socket via pcap
+    // Opens the socket via pcap
     // if (!pcap_dev->open()) {
     //     std::cerr << "Cannot open the pcap device." << std::endl;
     //     return 1;
@@ -113,5 +130,4 @@ int main(int argc, char** argv) {
 
     // pcap_dev->stopCapture();
     // pcap_dev->close();
-    
 }
