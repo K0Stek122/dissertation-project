@@ -1,3 +1,0 @@
-/home/kostek/Documents/Programming/dissertation/build/CMakeFiles/ids-dissertation.dir
-/home/kostek/Documents/Programming/dissertation/build/CMakeFiles/edit_cache.dir
-/home/kostek/Documents/Programming/dissertation/build/CMakeFiles/rebuild_cache.dir

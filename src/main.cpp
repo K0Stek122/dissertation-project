@@ -74,11 +74,12 @@ int main(int argc, char** argv) {
     AppOptions options;
 
     if (!setup_arguments(argc, argv, options)) {
+        std::cout << "error: Could not setup command-line arguments. Exiting..." << std::endl;
         return 1;
     }
 
     if (options.verbose) {
-        std::cout << "Verbose flag detected" << std::endl;
+        std::cout << "info: Verbose flag detected" << std::endl;
     }
 
     // Get all devices. The first one will be the closest hit.
