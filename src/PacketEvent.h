@@ -4,21 +4,22 @@
 #include <cstdint>
 #include <chrono>
 
-// HEADER ONLY
+#include "pcapplusplus/include/PcapLiveDeviceList.h"
+#include "pcapplusplus/include/PcapLiveDevice.h"
+#include "pcapplusplus/include/SystemUtils.h"
+#include "pcapplusplus/include/Packet.h"
+#include "pcapplusplus/include/IPv4Layer.h"
+#include "PacketEvent.h"
 
-enum class LAYER4_PROTOCOL {
-    TCP,
-    UDP,
-    OTHER
-};
+// HEADER ONLY
 
 // This is packet metadata
 struct Flow {
-    std::string srcIp;
-    std::string dstIp;
+    pcpp::IPAddress srcIp;
+    pcpp::IPAddress dstIp;
     uint16_t srcPort = 0;
     uint16_t dstPort = 0;
-    LAYER4_PROTOCOL protocol = LAYER4_PROTOCOL::OTHER;
+    pcpp::ProtocolType protocol = 0;
 };
 
 // This will be an event for packets instead of processing raw packets everywhere

@@ -10,6 +10,8 @@
 
 #include "args/args.hxx"
 
+#include "PacketEvent.h"
+
 struct AppOptions {
     bool verbose = false;
 };
@@ -64,9 +66,8 @@ This is a very simple implementation. The next step is to implement a few more t
 - Config - Self explanatory.
 
 */
-static void onPacketArrive(pcpp::RawPacket* rawPacket, pcpp::PcapLiveDevice* dev, void*) {
-    pcpp::Packet packet(rawPacket);
-    std::cout << "Packet captured: " << packet << std::endl;
+static void packet_arrive(const PacketEvent& event) {
+
 }
 
 int main(int argc, char** argv) {
@@ -81,36 +82,36 @@ int main(int argc, char** argv) {
     if (options.verbose) {
         std::cout << "info: Verbose flag detected" << std::endl;
     }
-
+    
     // Get all devices. The first one will be the closest hit.
-    auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
+    // auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
 
-    if (options.verbose) {
-        std::cout << "Detected network devices: " << std::endl;
-        for (auto iter = devices.begin(); iter != devices.end(); iter++) {
-            std::cout << (*iter)->getName() << std::endl;
-        }
-    }
+    // if (options.verbose) {
+    //     std::cout << "Detected network devices: " << std::endl;
+    //     for (auto iter = devices.begin(); iter != devices.end(); iter++) {
+    //         std::cout << (*iter)->getName() << std::endl;
+    //     }
+    // }
     
-    auto* pcap_dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(devices[0]->getName());
+    // auto* pcap_dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(devices[0]->getName());
     
-    if (!pcap_dev) {
-        std::cerr << "Cannot find any network devices." << std::endl;
-        return 1;
-    }
+    // if (!pcap_dev) {
+    //     std::cerr << "Cannot find any network devices." << std::endl;
+    //     return 1;
+    // }
 
-    // Opens the socket via pcap
-    if (!pcap_dev->open()) {
-        std::cerr << "Cannot open the pcap device." << std::endl;
-        return 1;
-    }
+    // // Opens the socket via pcap
+    // if (!pcap_dev->open()) {
+    //     std::cerr << "Cannot open the pcap device." << std::endl;
+    //     return 1;
+    // }
     
-    pcap_dev->setFilter("tcp");
-    pcap_dev->startCapture(onPacketArrive, nullptr);
+    // pcap_dev->setFilter("tcp");
+    // pcap_dev->startCapture(onPacketArrive, nullptr);
     
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    // std::this_thread::sleep_for(std::chrono::seconds(10));
 
-    pcap_dev->stopCapture();
-    pcap_dev->close();
+    // pcap_dev->stopCapture();
+    // pcap_dev->close();
     
 }
