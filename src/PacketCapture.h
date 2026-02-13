@@ -21,11 +21,15 @@ private:
 private:
     PacketEvent cast_packet(pcpp::RawPacket* packet);
     std::string get_tcp_flags(pcpp::TcpLayer* tcpLayer);
-    bool matches_pattern(const PacketEvent& e, const PacketFilter& f); // Matches a PacketEvent with a PacketFilter.
-    void get_packet_metadata(PacketEvent& e, pcpp::IPv4Layer* ipLayer, pcpp::TcpLayer* tcpLayer);
+    std::vector<PacketFilter> filters;
+    std::vector<PacketEvent> packet_backlog;
 
 public:
     std::optional<PacketEvent> capture(pcpp::RawPacket* raw_packet);
     int add_filter(PacketFilter filter_type);
+    std::vector<PacketFilter> get_all_filters();
+    bool remove_filter(int index);
+    
+    bool is_filtered(PacketEvent packet_event);
     bool process_packet_backlog();
 };

@@ -49,29 +49,29 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
 
 std::optional<PacketEvent> PacketCapture::capture(pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
-    if (!this->packet_filter.has_value()) {
-        this->packet_backlog.push_back(packet);
-        return packet;
-    }
-
-    if (this->matches_pattern(packet, this->packet_filter.value())) {
-        this->packet_backlog.push_back(packet);
-        return packet;
-    } else {
-        return std::nullopt;
-    }
+    this->packet_backlog.push_back(packet);
+    return packet;
 }
 
 bool PacketCapture::process_packet_backlog() {
     while (!this->packet_backlog.empty()) {
-        PacketEvent current_packet_event = this->packet_backlog.front();
-        this->packet_backlog.pop_front();
-        if (this->matches_pattern(current_packet_event, this->packet_filter.value())) {
-            //DO stuff to the packet here.
-            return true;
+        for (auto filter : this->filters) {
+            if (filter.dstIp == this->packet_backlog.back().flow.dstIp.toString()) {
+                return true;
+            }
         }
     }
     return false;
+}
+
+bool PacketCapture::is_filtered(PacketEvent packet_event) {
+    for (auto filter : this->filters) {
+        if (!filter.dstIp.empty()) {
+            if (packet_event.flow.dstIp.toString() == filter.dstIp) {
+                return true;
+            }
+        }
+    }
 }
 
 int PacketCapture::add_filter(PacketFilter packet_filter)

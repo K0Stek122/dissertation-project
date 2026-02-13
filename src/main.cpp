@@ -100,6 +100,15 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
         std::cout << captured_packet.value().flow.dstIp << std::endl;
     }
     PacketEvent captured_packet = p_capture.capture("", packet);
+    
+    PacketFilter p_filter;
+    p_filter.srcIp = "192.168.x.x"; //Account for wildcards
+
+    p_capture.add_filter(p_filter);
+    if (p_capture.process_packet_backlog()) {
+        std::cout << "Found a packet with filtered IP: " << p_filter.dstIp;
+    }
+    std::cout << captured_packet.flow.dstIp << std::endl;
 }
 
 int main(int argc, char** argv) {
