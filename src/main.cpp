@@ -69,13 +69,12 @@ This is a very simple implementation. The next step is to implement a few more t
 
 */
 void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
-    PacketCapture p_capture;
-    PacketEvent captured_packet = p_capture.capture("", packet);
     if (!packet || !device) {
         return;
     }
-    
-    std::cout << captured_packet.flow.dstIp << std::endl;
+
+    PacketCapture p_capture;
+    PacketEvent captured_packet = p_capture.capture("", packet);
 }
 
 int main(int argc, char** argv) {
