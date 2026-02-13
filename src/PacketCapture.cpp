@@ -53,3 +53,19 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
 PacketEvent PacketCapture::capture(std::string filter, pcpp::RawPacket* raw_packet) {
     return this->cast_packet(raw_packet);
 }
+
+int PacketCapture::add_filter(FilterType filter_type)
+{
+    this->filters.push_back(filter_type);
+    return 0;
+}
+
+std::vector<FilterType> PacketCapture::get_all_filters()
+{
+    return std::vector<FilterType>();
+}
+
+bool PacketCapture::remove_filter(int index)
+{
+    return false;
+}

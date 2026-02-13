@@ -94,8 +94,6 @@ int main(int argc, char** argv) {
     Sniffer sniffer;
     sniffer.start(onPacketArrive, "wlp0s20f3", "tcp");
     while (true) {
-        
-
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
     sniffer.stop();
