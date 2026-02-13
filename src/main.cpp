@@ -13,6 +13,7 @@
 #include "PacketEvent.h"
 #include "Sniffer.h"
 #include "PacketCapture.h"
+#include "PacketFilter.h"
 
 struct AppOptions {
     bool verbose = false;
@@ -75,6 +76,9 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
 
     PacketCapture p_capture;
     PacketEvent captured_packet = p_capture.capture("", packet);
+    
+    PacketFilter p_filter;
+    p_filter.srcIp = "192.168.x.x"; //Account for wildcards
 }
 
 int main(int argc, char** argv) {

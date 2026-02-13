@@ -51,21 +51,28 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
 }
 
 PacketEvent PacketCapture::capture(std::string filter, pcpp::RawPacket* raw_packet) {
-    return this->cast_packet(raw_packet);
+    PacketEvent packet = this->cast_packet(raw_packet);
+    for (auto filter : this->filters) {
+
+    }
 }
 
-int PacketCapture::add_filter(FilterType filter_type)
+int PacketCapture::add_filter(PacketFilter packet_filter)
 {
-    this->filters.push_back(filter_type);
+    this->filters.push_back(packet_filter);
     return 0;
 }
 
-std::vector<FilterType> PacketCapture::get_all_filters()
+std::vector<PacketFilter> PacketCapture::get_all_filters()
 {
-    return std::vector<FilterType>();
+    return this->filters;
 }
 
 bool PacketCapture::remove_filter(int index)
 {
+    if (index >= 0 && index < (int)this->filters.size()) {
+        this->filters.erase(this->filters.begin() + index);
+        return true;
+    }
     return false;
 }
