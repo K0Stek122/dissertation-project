@@ -52,8 +52,28 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
 
 PacketEvent PacketCapture::capture(std::string filter, pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
-    for (auto filter : this->filters) {
+    this->packet_backlog.push_back(packet);
+    return packet;
+}
 
+bool PacketCapture::process_packet_backlog() {
+    while (!this->packet_backlog.empty()) {
+        for (auto filter : this->filters) {
+            if (filter.dstIp == this->packet_backlog.back().flow.dstIp.toString()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool PacketCapture::is_filtered(PacketEvent packet_event) {
+    for (auto filter : this->filters) {
+        if (!filter.dstIp.empty()) {
+            if (packet_event.flow.dstIp.toString() == filter.dstIp) {
+                return true;
+            }
+        }
     }
 }
 
