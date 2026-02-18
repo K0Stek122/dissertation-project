@@ -53,6 +53,7 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
 std::optional<PacketEvent> PacketCapture::capture(pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
     if (!this->packet_filter.has_value()) {
+        this->packet_backlog.push_back(packet);
         return packet;
     }
 
