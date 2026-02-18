@@ -22,6 +22,7 @@ private:
     PacketEvent cast_packet(pcpp::RawPacket* packet);
     std::string get_tcp_flags(pcpp::TcpLayer* tcpLayer);
     bool matches_pattern(const PacketEvent& e, const PacketFilter& f); // Matches a PacketEvent with a PacketFilter.
+    void get_packet_metadata(PacketEvent& e, pcpp::IPv4Layer* ipLayer, pcpp::TcpLayer* tcpLayer);
 
 public:
     std::optional<PacketEvent> capture(pcpp::RawPacket* raw_packet);

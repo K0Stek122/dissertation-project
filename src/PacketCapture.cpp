@@ -15,6 +15,18 @@ std::string PacketCapture::get_tcp_flags(pcpp::TcpLayer* tcpLayer) {
     return result;
 }
 
+void PacketCapture::get_packet_metadata(PacketEvent& e, pcpp::IPv4Layer* ipLayer, pcpp::TcpLayer* tcpLayer) {
+    e.flow.dstIp = ipLayer->getDstIPv4Address();
+    e.flow.srcIp = ipLayer->getSrcIPv4Address();
+
+    e.ipHeader.checksum = ipLayer->getIPv4Header()->headerChecksum;
+    e.ipHeader.timeToLive = ipLayer->getIPv4Header()->timeToLive;
+
+    e.flow.srcPort = tcpLayer->getSrcPort();
+    e.flow.dstPort = tcpLayer->getDstPort();
+    e.tcpFlags = this->get_tcp_flags(tcpLayer);
+}
+
 PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
     /*
      * Converts pcpp::RawPacket into a PacketEvent for our packet capture.
@@ -25,24 +37,12 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
     pcpp::Packet parsed_packet(packet);
     
     pcpp::IPv4Layer* ipLayer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
-    if (ipLayer == NULL) { // Packet is invalid. Need to return an empty event.
-        return event;
-    }
-    
-    event.flow.dstIp = ipLayer->getDstIPv4Address();
-    event.flow.srcIp = ipLayer->getSrcIPv4Address();
-
-    event.ipHeader.checksum = ipLayer->getIPv4Header()->headerChecksum;
-    event.ipHeader.timeToLive = ipLayer->getIPv4Header()->timeToLive;
-
     pcpp::TcpLayer* tcpLayer = parsed_packet.getLayerOfType<pcpp::TcpLayer>();
-    if (tcpLayer == NULL) {
+    if (ipLayer == NULL || tcpLayer == NULL) { // Packet is invalid. Need to return an empty event.
         return event;
     }
-    
-    event.flow.srcPort = tcpLayer->getSrcPort();
-    event.flow.dstPort = tcpLayer->getDstPort();
-    event.tcpFlags = this->get_tcp_flags(tcpLayer);
+
+    this->get_packet_metadata(event, ipLayer, tcpLayer);
     
     return event;
 }
