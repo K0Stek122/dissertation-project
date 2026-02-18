@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
+#include <optional>
 // HEADER ONLY
 
 struct PacketFilter {
-    std::string srcIp = "";
-    std::string dstIp = "";
-    uint16_t dstPort = 0;
-    uint16_t srcPort = 0;
+    std::optional<pcpp::IPv4Address> srcIp;
+    std::optional<pcpp::IPv4Address> dstIp;
+    std::optional<uint16_t> dstPort;
+    std::optional<uint16_t> srcPort;
 };

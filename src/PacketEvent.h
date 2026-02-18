@@ -20,8 +20,8 @@ struct IPHeader {
 
 // This is packet metadata
 struct Flow {
-    pcpp::IPAddress srcIp;
-    pcpp::IPAddress dstIp;
+    pcpp::IPv4Address srcIp;
+    pcpp::IPv4Address dstIp;
     uint16_t srcPort = 0;
     uint16_t dstPort = 0;
     pcpp::ProtocolType protocol = 0;

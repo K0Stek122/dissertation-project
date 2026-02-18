@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <optional>
 
 #include "pcapplusplus/include/PcapLiveDeviceList.h"
 #include "pcapplusplus/include/PcapLiveDevice.h"
@@ -14,6 +15,7 @@
 #include "Sniffer.h"
 #include "PacketCapture.h"
 #include "PacketFilter.h"
+#include <arpa/inet.h>
 
 struct AppOptions {
     bool verbose = false;
@@ -74,17 +76,22 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
         return;
     }
 
-    PacketCapture p_capture;
-    PacketEvent captured_packet = p_capture.capture("", packet);
-    
     PacketFilter p_filter;
-    p_filter.srcIp = "192.168.x.x"; //Account for wildcards
 
+    in_addr addr;
+    //10.58.119.69
+    p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
+
+    PacketCapture p_capture;
+    
     p_capture.add_filter(p_filter);
-    if (p_capture.process_packet_backlog()) {
-        std::cout << "Found a packet with filtered IP: " << p_filter.dstIp;
+
+    //p_capture.add_filter(p_filter);
+    std::optional<PacketEvent> captured_packet = p_capture.capture("", packet);
+    
+    if (captured_packet.has_value()) {
+        std::cout << captured_packet.value().flow.dstIp << std::endl;
     }
-    std::cout << captured_packet.flow.dstIp << std::endl;
 }
 
 int main(int argc, char** argv) {

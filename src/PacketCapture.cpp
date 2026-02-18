@@ -50,49 +50,42 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
     return event;
 }
 
-PacketEvent PacketCapture::capture(std::string filter, pcpp::RawPacket* raw_packet) {
+std::optional<PacketEvent> PacketCapture::capture(std::string filter, pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
-    this->packet_backlog.push_back(packet);
-    return packet;
+    if (!this->packet_filter.has_value()) {
+        return packet;
+    }
+
+    if (this->matches_pattern(packet, this->packet_filter.value())) {
+        this->packet_backlog.push_back(packet);
+        return packet;
+    } else {
+        return std::nullopt;
+    }
 }
 
 bool PacketCapture::process_packet_backlog() {
     while (!this->packet_backlog.empty()) {
-        for (auto filter : this->filters) {
-            if (filter.dstIp == this->packet_backlog.back().flow.dstIp.toString()) {
-                return true;
-            }
+        PacketEvent current_packet_event = this->packet_backlog.front();
+        this->packet_backlog.pop_front();
+        if (this->matches_pattern(current_packet_event, this->packet_filter.value())) {
+            //DO stuff to the packet here.
+            return true;
         }
     }
     return false;
-}
-
-bool PacketCapture::is_filtered(PacketEvent packet_event) {
-    for (auto filter : this->filters) {
-        if (!filter.dstIp.empty()) {
-            if (packet_event.flow.dstIp.toString() == filter.dstIp) {
-                return true;
-            }
-        }
-    }
 }
 
 int PacketCapture::add_filter(PacketFilter packet_filter)
 {
-    this->filters.push_back(packet_filter);
+    this->packet_filter = packet_filter;
     return 0;
 }
 
-std::vector<PacketFilter> PacketCapture::get_all_filters()
-{
-    return this->filters;
-}
-
-bool PacketCapture::remove_filter(int index)
-{
-    if (index >= 0 && index < (int)this->filters.size()) {
-        this->filters.erase(this->filters.begin() + index);
-        return true;
-    }
-    return false;
+bool PacketCapture::matches_pattern(const PacketEvent& p, const PacketFilter& f) {
+    if (f.srcIp && p.flow.srcIp.toInt() != f.srcIp.value().toInt()) return false;
+    if (f.dstIp && p.flow.dstIp.toInt() != f.dstIp.value().toInt()) return false;
+    if (f.srcPort && p.flow.srcPort != f.srcPort.value()) return false;
+    if (f.dstPort && p.flow.dstPort != f.dstPort.value()) return false;
+    return true;
 }
