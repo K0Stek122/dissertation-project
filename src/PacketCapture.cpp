@@ -12,6 +12,15 @@ std::string PacketCapture::get_tcp_flags(pcpp::TcpLayer* tcpLayer) {
     if (tcpLayer->getTcpHeader()->rstFlag == 1) result += "RST ";
     if (tcpLayer->getTcpHeader()->finFlag == 1) result += "FIN ";
 
+    if (tcpLayer->getTcpHeader()->synFlag == 1) result += "SYN ";
+    if (tcpLayer->getTcpHeader()->ackFlag == 1) result += "ACK ";
+    if (tcpLayer->getTcpHeader()->pshFlag == 1) result += "PSH ";
+    if (tcpLayer->getTcpHeader()->cwrFlag == 1) result += "CWR ";
+    if (tcpLayer->getTcpHeader()->urgFlag == 1) result += "URG ";
+    if (tcpLayer->getTcpHeader()->eceFlag == 1) result += "ECE ";
+    if (tcpLayer->getTcpHeader()->rstFlag == 1) result += "RST ";
+    if (tcpLayer->getTcpHeader()->finFlag == 1) result += "FIN ";
+
     return result;
 }
 
@@ -32,11 +41,25 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
      * Converts pcpp::RawPacket into a PacketEvent for our packet capture.
      * pcpp::RawPacket* is modified in pcpp::Packet therefore cannot be a constant reference.
      */
+    /*
+     * Converts pcpp::RawPacket into a PacketEvent for our packet capture.
+     * pcpp::RawPacket* is modified in pcpp::Packet therefore cannot be a constant reference.
+     */
     PacketEvent event;
     
     pcpp::Packet parsed_packet(packet);
     
     pcpp::IPv4Layer* ipLayer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
+    if (ipLayer == NULL) { // Packet is invalid. Need to return an empty event.
+        return event;
+    }
+    
+    event.flow.dstIp = ipLayer->getDstIPv4Address();
+    event.flow.srcIp = ipLayer->getSrcIPv4Address();
+
+    event.ipHeader.checksum = ipLayer->getIPv4Header()->headerChecksum;
+    event.ipHeader.timeToLive = ipLayer->getIPv4Header()->timeToLive;
+
     pcpp::TcpLayer* tcpLayer = parsed_packet.getLayerOfType<pcpp::TcpLayer>();
     if (ipLayer == NULL || tcpLayer == NULL) { // Packet is invalid. Need to return an empty event.
         return event;
