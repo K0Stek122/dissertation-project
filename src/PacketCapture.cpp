@@ -50,16 +50,6 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
     pcpp::Packet parsed_packet(packet);
     
     pcpp::IPv4Layer* ipLayer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
-    if (ipLayer == NULL) { // Packet is invalid. Need to return an empty event.
-        return event;
-    }
-    
-    event.flow.dstIp = ipLayer->getDstIPv4Address();
-    event.flow.srcIp = ipLayer->getSrcIPv4Address();
-
-    event.ipHeader.checksum = ipLayer->getIPv4Header()->headerChecksum;
-    event.ipHeader.timeToLive = ipLayer->getIPv4Header()->timeToLive;
-
     pcpp::TcpLayer* tcpLayer = parsed_packet.getLayerOfType<pcpp::TcpLayer>();
     if (ipLayer == NULL || tcpLayer == NULL) { // Packet is invalid. Need to return an empty event.
         return event;
