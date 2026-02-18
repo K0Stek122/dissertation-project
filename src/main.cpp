@@ -105,17 +105,13 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
 =======
 >>>>>>> bfd387d (feat: Implemented single packet filtering)
     PacketFilter p_filter;
-
-    in_addr addr;
-    //10.58.119.69
     p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
 
     PacketCapture p_capture;
-    
     p_capture.add_filter(p_filter);
 
     //p_capture.add_filter(p_filter);
-    std::optional<PacketEvent> captured_packet = p_capture.capture("", packet);
+    std::optional<PacketEvent> captured_packet = p_capture.capture(packet);
     
     if (captured_packet.has_value()) {
         std::cout << captured_packet.value().flow.dstIp << std::endl;
