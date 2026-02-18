@@ -15,7 +15,6 @@
 #include "Sniffer.h"
 #include "PacketCapture.h"
 #include "PacketFilter.h"
-#include <arpa/inet.h>
 
 struct AppOptions {
     bool verbose = false;
