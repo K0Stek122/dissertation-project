@@ -50,7 +50,7 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
     return event;
 }
 
-std::optional<PacketEvent> PacketCapture::capture(std::string filter, pcpp::RawPacket* raw_packet) {
+std::optional<PacketEvent> PacketCapture::capture(pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
     if (!this->packet_filter.has_value()) {
         return packet;

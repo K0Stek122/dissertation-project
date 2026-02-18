@@ -21,7 +21,7 @@ private:
     bool matches_pattern(const PacketEvent& e, const PacketFilter& f);
 
 public:
-    std::optional<PacketEvent> capture(std::string filter, pcpp::RawPacket* raw_packet);
+    std::optional<PacketEvent> capture(pcpp::RawPacket* raw_packet);
     int add_filter(PacketFilter filter_type);
     
     bool process_packet_backlog();

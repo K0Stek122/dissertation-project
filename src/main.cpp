@@ -77,17 +77,13 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
     }
 
     PacketFilter p_filter;
-
-    in_addr addr;
-    //10.58.119.69
     p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
 
     PacketCapture p_capture;
-    
     p_capture.add_filter(p_filter);
 
     //p_capture.add_filter(p_filter);
-    std::optional<PacketEvent> captured_packet = p_capture.capture("", packet);
+    std::optional<PacketEvent> captured_packet = p_capture.capture(packet);
     
     if (captured_packet.has_value()) {
         std::cout << captured_packet.value().flow.dstIp << std::endl;
@@ -113,35 +109,4 @@ int main(int argc, char** argv) {
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
     sniffer.stop();
-    
-    // Get all devices. The first one will be the closest hit.
-    // auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
-
-    // if (options.verbose) {
-    //     std::cout << "Detected network devices: " << std::endl;
-    //     for (auto iter = devices.begin(); iter != devices.end(); iter++) {
-    //         std::cout << (*iter)->getName() << std::endl;
-    //     }
-    // }
-    
-    // auto* pcap_dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(devices[0]->getName());
-    
-    // if (!pcap_dev) {
-    //     std::cerr << "Cannot find any network devices." << std::endl;
-    //     return 1;
-    // }
-
-    // Opens the socket via pcap
-    // if (!pcap_dev->open()) {
-    //     std::cerr << "Cannot open the pcap device." << std::endl;
-    //     return 1;
-    // }
-    
-    // pcap_dev->setFilter("tcp");
-    // pcap_dev->startCapture(onPacketArrive, nullptr);
-    
-    // std::this_thread::sleep_for(std::chrono::seconds(10));
-
-    // pcap_dev->stopCapture();
-    // pcap_dev->close();
 }
