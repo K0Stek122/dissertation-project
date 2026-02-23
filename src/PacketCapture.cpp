@@ -25,6 +25,8 @@ void PacketCapture::get_packet_metadata(PacketEvent& e, pcpp::IPv4Layer* ipLayer
     e.flow.srcPort = tcpLayer->getSrcPort();
     e.flow.dstPort = tcpLayer->getDstPort();
     e.tcpFlags = this->get_tcp_flags(tcpLayer);
+    
+    
 }
 
 PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
@@ -41,6 +43,9 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
     if (ipLayer == NULL || tcpLayer == NULL) { // Packet is invalid. Need to return an empty event.
         return event;
     }
+    
+    event.data.payload = std::vector<uint8_t>(packet->getRawData(), packet->getRawData() + packet->getRawDataLen());
+    event.data.len = packet->getRawDataLen();
 
     this->get_packet_metadata(event, ipLayer, tcpLayer);
     
@@ -74,8 +79,14 @@ bool PacketCapture::process_packet_backlog() {
     return false;
 }
 
-int PacketCapture::add_filter(PacketFilter packet_filter)
-{
+void PacketCapture::print_packet_data(const PacketEvent &p) {
+    for (const auto& byte : p.data.payload) {
+        std::cout << std::hex << std::to_string(byte) << " ";
+    }
+    std::cout << std::endl;
+}
+
+int PacketCapture::add_filter(PacketFilter packet_filter) {
     this->packet_filter = packet_filter;
     return 0;
 }

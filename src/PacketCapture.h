@@ -28,4 +28,6 @@ public:
     std::optional<PacketEvent> capture(pcpp::RawPacket* raw_packet);
     int add_filter(PacketFilter filter_type);
     bool process_packet_backlog();
+    
+    void print_packet_data(const PacketEvent& p);
 };

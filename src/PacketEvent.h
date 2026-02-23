@@ -27,6 +27,12 @@ struct Flow {
     pcpp::ProtocolType protocol = 0;
 };
 
+struct Data {
+    unsigned int len = 0;
+    // TODO, turn uint8_t to constant.
+    std::vector<uint8_t> payload = {};
+};
+
 // This will be an event for packets instead of processing raw packets everywhere
 struct PacketEvent {
     Flow flow;
@@ -34,4 +40,6 @@ struct PacketEvent {
     std::size_t length = 0;
     std::chrono::system_clock::time_point timestamp = {}; // This returns the system clock at which point the packet arrived.
     std::string tcpFlags = "";
+
+    Data data;
 };

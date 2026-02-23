@@ -15,6 +15,7 @@
 #include "Sniffer.h"
 #include "PacketCapture.h"
 #include "PacketFilter.h"
+#include "IDS.h"
 
 struct AppOptions {
     bool verbose = false;
@@ -84,9 +85,18 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
     //p_capture.add_filter(p_filter);
     std::optional<PacketEvent> captured_packet = p_capture.capture(packet);
     
+    IDS ids_system;
+    Signature test_signature;
+    test_signature.pattern = {246,53,222,78,79,159,218,171,82,13,192,74,8};
+
     if (captured_packet.has_value()) {
-        std::cout << captured_packet.value().flow.dstIp << std::endl;
+        if (ids_system.match(captured_packet.value(), test_signature)) {
+            std::cout << "IDS WORKING" << std::endl;
+            p_capture.print_packet_data(captured_packet.value());
+        }
     }
+    
+    
 }
 
 int main(int argc, char** argv) {
