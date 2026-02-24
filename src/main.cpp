@@ -19,7 +19,7 @@
 
 struct AppOptions {
     bool verbose = false;
-};
+} appOptions;
 
 bool setup_arguments(int argc, char** argv, AppOptions& options) {
     args::ArgumentParser parser(
@@ -62,25 +62,20 @@ bool setup_arguments(int argc, char** argv, AppOptions& options) {
     return true;
 }
 
-/*
-This is a very simple implementation. The next step is to implement a few more things. We need to do the following:
-- Capture - Capture the packets with the eBPF filter and network devices.
-- Decode - Turn the raw packets into structured events that we can properly analyse
-- Detect - Detect the packets with pluggable extendable detectors
-- Output - Pluggable functions like output to JSON, SQLite, or Message queues.
-- Config - Self explanatory.
 
-*/
 void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
     if (!packet || !device) {
         return;
     }
 
     PacketFilter p_filter;
-    p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
+    p_filter.dstPort = 443;
+    PacketFilter p_filter2;
+    p_filter2.dstPort = 52484;
 
     PacketCapture p_capture;
     p_capture.add_filter(p_filter);
+    p_capture.add_filter(p_filter2);
 
     //p_capture.add_filter(p_filter);
     std::optional<PacketEvent> captured_packet = p_capture.capture(packet);
@@ -90,9 +85,13 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
     test_signature.pattern = {246,53,222,78,79,159,218,171,82,13,192,74,8};
 
     if (captured_packet.has_value()) {
-        if (ids_system.match(captured_packet.value(), test_signature)) {
-            std::cout << "IDS WORKING" << std::endl;
-            p_capture.print_packet_data(captured_packet.value());
+        if (appOptions.verbose) {
+            std::cout << "PACKET CAPTURED: "
+                        << std::endl
+                        << "dstIp: " << captured_packet.value().flow.dstIp << std::endl
+                        << "srcIp: " << captured_packet.value().flow.srcIp << std::endl
+                        << "dstPort: " << captured_packet.value().flow.dstPort << std::endl
+                        << "srcPort: " << captured_packet.value().flow.srcPort << std::endl << std::endl;
         }
     }
     
@@ -100,20 +99,20 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
 }
 
 int main(int argc, char** argv) {
-    
-    AppOptions options;
-
-    if (!setup_arguments(argc, argv, options)) {
+    if (!setup_arguments(argc, argv, appOptions)) {
         std::cout << "error: Could not setup command-line arguments. Exiting..." << std::endl;
         return 1;
     }
 
-    if (options.verbose) {
-        std::cout << "info: Verbose flag detected" << std::endl;
-    }
+    if (appOptions.verbose) std::cout << "info: Verbose flag detected" << std::endl;
+
+    if (appOptions.verbose) std::cout << "Starting packet sniffing..." << std::endl;
 
     Sniffer sniffer;
     sniffer.start(onPacketArrive, "wlp0s20f3", "tcp");
+
+    if (appOptions.verbose) std::cout << "Packet Sniffing started on wlp0s20f3" << std::endl;
+
     while (true) {
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }

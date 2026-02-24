@@ -54,17 +54,20 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
 
 std::optional<PacketEvent> PacketCapture::capture(pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
-    if (!this->packet_filter.has_value()) {
-        this->packet_backlog.push_back(packet);
-        return packet;
-    }
-
-    if (this->matches_pattern(packet, this->packet_filter.value())) {
+    
+    if (this->packet_filters.empty()) {
         this->packet_backlog.push_back(packet);
         return packet;
     } else {
+        for (const auto& filter : this->packet_filters) {
+            if (this->matches_pattern(packet, filter)) {
+                this->packet_backlog.push_back(packet);
+                return packet;
+            }
+        }
         return std::nullopt;
     }
+    
 }
 
 bool PacketCapture::process_packet_backlog() {
@@ -87,6 +90,7 @@ void PacketCapture::print_packet_data(const PacketEvent &p) {
 }
 
 int PacketCapture::add_filter(PacketFilter packet_filter) {
+    this->packet_filters.push_back(packet_filter);
     this->packet_filter = packet_filter;
     return 0;
 }

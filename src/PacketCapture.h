@@ -16,6 +16,7 @@ class PacketCapture {
 private:
     std::optional<PacketFilter> packet_filter;
     std::deque<PacketEvent> packet_backlog;
+    std::vector<PacketFilter> packet_filters;
 
 // METHODS
 private:
