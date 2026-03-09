@@ -19,9 +19,10 @@
 
 struct AppOptions {
     bool verbose = false;
+    bool test = true;
 };
 
-bool setup_arguments(int argc, char** argv, AppOptions& options) {
+bool setup_arguments(const int& argc, char** argv, AppOptions& options) {
     args::ArgumentParser parser(
         "RegSpy",
         "A finite-automata, pattern-based IDS solution for containerised environments."
@@ -65,6 +66,7 @@ bool setup_arguments(int argc, char** argv, AppOptions& options) {
     }
     
     options.verbose = verbose;
+    options.test = test;
 
     return true;
 }
@@ -108,6 +110,11 @@ int main(int argc, char** argv) {
 
     if (options.verbose) {
         std::cout << "info: Verbose flag detected" << std::endl;
+    }
+    
+    if (options.test) {
+        std::cout << "Hello World!" << std::endl;
+        return 0;
     }
 
     Sniffer sniffer;

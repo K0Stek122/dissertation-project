@@ -35,7 +35,7 @@ namespace TestCase {
         }
     }
     
-    bool test_PCapturePacketCapture() {
+    bool test_PCapturePacketCapture_srcIp() {
         // MOCK PACKET CREATION
         uint8_t packet_data[] = {0x45, 0x00, 0x00, 0x3c, 0x1c, 0x46, 0x40, 0x00, 0x40, 0x06, 0xb1, 0xe6, 0xac, 0x10, 0x0a, 0x63, 0xac, 0x10, 0x0a, 0x0c};
         pcpp::RawPacket* mock_packet = new pcpp::RawPacket(packet_data, sizeof(packet_data), nullptr, false);
@@ -43,6 +43,31 @@ namespace TestCase {
         PacketCapture p_capture;
         PacketEvent captured_packet = p_capture.capture("", mock_packet);
         
-        if (captured_packet.flow.dstIp)
+        if (captured_packet.flow.srcIp != "172.16.10.99") {
+            Log::LogFailure("test_PCapturePacketCapture_srcIp");
+            delete mock_packet;
+            return false;
+        } else {
+            Log::LogSuccess("test_PCapturePacketCapture_srcIp");
+            delete mock_packet;
+            return true;
+        }
+    }
+    bool test_PCapturePacketCapture_dstIp() {
+        uint8_t packet_data[] = {0x45, 0x00, 0x00, 0x3c, 0x1c, 0x46, 0x40, 0x00, 0x40, 0x06, 0xb1, 0xe6, 0xac, 0x10, 0x0a, 0x63, 0xac, 0x10, 0x0a, 0x0c};
+        pcpp::RawPacket* mock_packet = new pcpp::RawPacket(packet_data, sizeof(packet_data), nullptr, false);
+        
+        PacketCapture p_capture;
+        PacketEvent captured_packet = p_capture.capture("", mock_packet);
+        
+        if (captured_packet.flow.dstIp != "172.16.10.12") {
+            Log::LogFailure("test_PCapturePacketCapture_dstIp");
+            delete mock_packet;
+            return false;
+        } else {
+            Log::LogSuccess("test_PCapturePacketCapture_dstIp");
+            delete mock_packet;
+            return true;
+        }
     }
 };
