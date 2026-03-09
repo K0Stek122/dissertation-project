@@ -33,6 +33,13 @@ bool setup_arguments(int argc, char** argv, AppOptions& options) {
         "Log all the progress of the app.",
         {'v', "verbose"}
     );
+    
+    args::Flag test(
+        parser,
+        "test",
+        "Run unit tests rather than the app itself.",
+        {'t', "test"}
+    );
 
     args::HelpFlag help(
         parser,
