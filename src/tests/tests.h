@@ -26,6 +26,7 @@ namespace TestCase {
     bool test_PCapturePacketCapture_dstIp();
     
     bool test_AhoCorasickNode_functions();
+    bool test_AhoCorasickDFA();
 }
 
 #endif // TESTS_H

@@ -117,6 +117,7 @@ int main(int argc, char** argv) {
         TestCase::test_PCapturePacketCapture_srcIp();
         TestCase::test_SnifferStart();
         TestCase::test_AhoCorasickNode_functions();
+        TestCase::test_AhoCorasickDFA();
         return 0;
     }
 

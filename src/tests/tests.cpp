@@ -15,11 +15,14 @@ bool TestCase::test_SnifferStart() {
     // fIx this later on.
     if (!sniffer.start(nullptr, "wlp0s20f3", "tcp")) {
         Log::LogFailure("test_SnifferStart", "sniffer.start() == true");
+        sniffer.stop();
         return false;
     } else {
         Log::LogSuccess("test_SnifferStart");
+        sniffer.stop();
         return true;
     }
+    
 }
 
 bool TestCase::test_PCapturePacketCapture_srcIp() {
@@ -96,7 +99,7 @@ bool TestCase::test_AhoCorasickNode_functions() {
     
     // Test addOutput
     Node output_node = Node();
-    node.addOutput(output_node);
+    node.addOutput("test_output");
     if (node.outputs.empty()) {
         Log::LogFailure("test_AhoCorasickNode_functions", "addOutput adds output to set");
         delete child;
@@ -128,4 +131,19 @@ bool TestCase::test_AhoCorasickNode_functions() {
     return true;
     
 
+}
+
+bool TestCase::test_AhoCorasickDFA()
+{
+    std::vector<std::string> text_to_search_for = {"eat", "eating", "meat", "in"};
+    std::string text = "i am eating meat";
+    auto machine = AhoCorasick(text_to_search_for);
+    std::cout << "hello world" << std::endl;
+    auto result = machine.search(text);
+    
+    for (const auto& match : result) {
+        std::cout << "pos = " << match.pos << ", val = " << match.val << std::endl;
+    }
+
+    return true;
 }
