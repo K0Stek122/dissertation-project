@@ -94,7 +94,6 @@ int PacketCapture::add_filter(PacketFilter packet_filter)
     return 0;
 }
 
-<<<<<<< HEAD
 std::vector<PacketFilter> PacketCapture::get_all_filters()
 {
     return this->filters;
@@ -102,17 +101,8 @@ std::vector<PacketFilter> PacketCapture::get_all_filters()
 
 bool PacketCapture::remove_filter(int index)
 {
-<<<<<<< HEAD
     return true;
-=======
-    if (index >= 0 && index < (int)this->filters.size()) {
-        this->filters.erase(this->filters.begin() + index);
-        return true;
-    }
-    return false;
->>>>>>> 6639662 (feat: implemented PacketFilter.h)
 }
-=======
 bool PacketCapture::matches_pattern(const PacketEvent& p, const PacketFilter& f) {
     if (f.srcIp && p.flow.srcIp.toInt() != f.srcIp.value().toInt()) return false;
     if (f.dstIp && p.flow.dstIp.toInt() != f.dstIp.value().toInt()) return false;
