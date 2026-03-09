@@ -90,19 +90,9 @@ bool PacketCapture::process_packet_backlog() {
 int PacketCapture::add_filter(PacketFilter packet_filter)
 {
     this->packet_filter = packet_filter;
-    this->packet_filter = packet_filter;
     return 0;
 }
 
-std::vector<PacketFilter> PacketCapture::get_all_filters()
-{
-    return this->filters;
-}
-
-bool PacketCapture::remove_filter(int index)
-{
-    return true;
-}
 bool PacketCapture::matches_pattern(const PacketEvent& p, const PacketFilter& f) {
     if (f.srcIp && p.flow.srcIp.toInt() != f.srcIp.value().toInt()) return false;
     if (f.dstIp && p.flow.dstIp.toInt() != f.dstIp.value().toInt()) return false;
@@ -110,4 +100,3 @@ bool PacketCapture::matches_pattern(const PacketEvent& p, const PacketFilter& f)
     if (f.dstPort && p.flow.dstPort != f.dstPort.value()) return false;
     return true;
 }
->>>>>>> bfd387d (feat: Implemented single packet filtering)

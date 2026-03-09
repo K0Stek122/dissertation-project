@@ -87,23 +87,6 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
         return;
     }
 
-<<<<<<< HEAD
-    PacketFilter p_filter;
-    p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
-
-    PacketCapture p_capture;
-    p_capture.add_filter(p_filter);
-
-    //p_capture.add_filter(p_filter);
-    std::optional<PacketEvent> captured_packet = p_capture.capture(packet);
-    
-    if (captured_packet.has_value()) {
-        std::cout << captured_packet.value().flow.dstIp << std::endl;
-    }
-    PacketEvent captured_packet = p_capture.capture("", packet);
-    
-=======
->>>>>>> bfd387d (feat: Implemented single packet filtering)
     PacketFilter p_filter;
     p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
 
@@ -120,7 +103,7 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
 
 int main(int argc, char** argv) {
     
-    if (!setup_arguments(argc, argv, options)) {
+    if (!setup_arguments(argc, argv)) {
         std::cout << "error: Could not setup command-line arguments. Exiting..." << std::endl;
         return 1;
     }

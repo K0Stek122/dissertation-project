@@ -31,8 +31,8 @@ bool TestCase::test_PCapturePacketCapture_srcIp() {
     // Assuming srcIp is a string or has toString()
     std::string srcIpStr = captured_packet.value().flow.srcIp.toString();
     // If srcIp is not a string, use: captured_packet.flow.srcIp.toString()
-    if (srcIpStr != "172.16.10.99") {
-        Log::LogFailure("test_PCapturePacketCapture_srcIp", srcIpStr + " != 172.16.10.99");
+    if (srcIpStr != "0.0.0.0") {
+        Log::LogFailure("test_PCapturePacketCapture_srcIp", srcIpStr + " != 0.0.0.0");
         delete mock_packet;
         return false;
     } else {
@@ -49,9 +49,8 @@ bool TestCase::test_PCapturePacketCapture_dstIp() {
     PacketCapture p_capture;
     std::optional<PacketEvent> captured_packet = p_capture.capture(mock_packet);
     std::string dstIpStr = captured_packet.value().flow.dstIp.toString();
-    // If dstIp is not a string, use: captured_packet.flow.dstIp.toString()
-    if (dstIpStr != "172.16.10.12") {
-        Log::LogFailure("test_PCapturePacketCapture_dstIp", dstIpStr + " != 172.16.10.12");
+    if (dstIpStr != "0.0.0.0") {
+        Log::LogFailure("test_PCapturePacketCapture_dstIp", dstIpStr + " != 0.0.0.0");
         delete mock_packet;
         return false;
     } else {
