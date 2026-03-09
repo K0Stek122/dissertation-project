@@ -59,3 +59,73 @@ bool TestCase::test_PCapturePacketCapture_dstIp() {
         return true;
     }
 }
+
+bool TestCase::test_AhoCorasickNode_functions() {
+    Node node;
+
+    // Test hasChild on empty node
+    if (node.hasChild('a')) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "hasChild('a') == false on empty node");
+        return false;
+    }
+    
+    // Test setChild and getChild
+    Node* child = new Node();
+    node.setChild('a', child);
+    if (!node.hasChild('a')) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "hasChild('a') == true after setChild");
+        delete child;
+        return false;
+    }
+    
+    if (node.getChild('a') != child) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "getChild('a') returns correct child");
+        delete child;
+        return false;
+    }
+    
+    // Test setChild with multiple children
+    Node* child_b = new Node();
+    node.setChild('b', child_b);
+    if (!node.hasChild('b')) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "hasChild('b') == true after setChild");
+        delete child;
+        delete child_b;
+        return false;
+    }
+    
+    // Test addOutput
+    Node output_node = Node();
+    node.addOutput(output_node);
+    if (node.outputs.empty()) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "addOutput adds output to set");
+        delete child;
+        delete child_b;
+        return false;
+    }
+    
+    // Test copyOutputs
+    Node target_node = Node();
+    target_node.copyOutputs(node);
+    if (target_node.outputs.size() != node.outputs.size()) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "copyOutputs copies all outputs");
+        delete child;
+        delete child_b;
+        return false;
+    }
+    
+    // Test failureLink initialization
+    if (node.failureLink != nullptr) {
+        Log::LogFailure("test_AhoCorasickNode_functions", "failureLink initialized to nullptr");
+        delete child;
+        delete child_b;
+        return false;
+    }
+    
+    delete child;
+    delete child_b;
+    Log::LogSuccess("test_AhoCorasickNode_functions");
+    return true;
+    
+
+}
