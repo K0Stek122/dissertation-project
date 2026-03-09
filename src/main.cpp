@@ -9,6 +9,8 @@
 #include "pcapplusplus/include/SystemUtils.h"
 #include "pcapplusplus/include/Packet.h"
 
+#include "tests/tests.h"
+
 #include "args/args.hxx"
 
 #include "PacketEvent.h"
@@ -20,9 +22,9 @@
 struct AppOptions {
     bool verbose = false;
     bool test = true;
-};
+} app_options;
 
-bool setup_arguments(const int& argc, char** argv, AppOptions& options) {
+bool setup_arguments(const int& argc, char** argv) {
     args::ArgumentParser parser(
         "RegSpy",
         "A finite-automata, pattern-based IDS solution for containerised environments."
@@ -65,8 +67,8 @@ bool setup_arguments(const int& argc, char** argv, AppOptions& options) {
         return true;
     }
     
-    options.verbose = verbose;
-    options.test = test;
+    app_options.verbose = verbose;
+    app_options.test = test;
 
     return true;
 }
@@ -97,23 +99,24 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
     if (captured_packet.has_value()) {
         std::cout << captured_packet.value().flow.dstIp << std::endl;
     }
+    PacketEvent captured_packet = p_capture.capture("", packet);
 }
 
 int main(int argc, char** argv) {
     
-    AppOptions options;
-
     if (!setup_arguments(argc, argv, options)) {
         std::cout << "error: Could not setup command-line arguments. Exiting..." << std::endl;
         return 1;
     }
 
-    if (options.verbose) {
+    if (app_options.verbose) {
         std::cout << "info: Verbose flag detected" << std::endl;
     }
     
-    if (options.test) {
-        std::cout << "Hello World!" << std::endl;
+    if (app_options.test) {
+        TestCase::test_PCapturePacketCapture_dstIp();
+        TestCase::test_PCapturePacketCapture_srcIp();
+        TestCase::test_SnifferStart();
         return 0;
     }
 

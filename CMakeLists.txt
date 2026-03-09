@@ -10,7 +10,7 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp" "src/tests/*.cpp")
 add_executable(ids-dissertation ${SOURCES})
 
 target_include_directories(ids-dissertation PRIVATE ${CMAKE_SOURCE_DIR}/src/pcapplusplus/include)
