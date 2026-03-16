@@ -138,11 +138,19 @@ bool TestCase::test_AhoCorasickDFA()
     std::vector<std::string> text_to_search_for = {"eat", "eating", "meat", "in"};
     std::string text = "i am eating meat";
     auto machine = AhoCorasick(text_to_search_for);
-    std::cout << "hello world" << std::endl;
     auto result = machine.search(text);
     
-    for (const auto& match : result) {
-        std::cout << "pos = " << match.pos << ", val = " << match.val << std::endl;
+    std::vector<FoundString> expected_result = {
+        {5, "eat"},
+        {8, "in"},
+        {5, "eating"},
+        {13, "eat"},
+        {12, "meat"}
+    };
+    if (expected_result != result) {
+        Log::LogFailure("test_AhoCorasickDFA", "expected_result != result");
+    } else {
+        Log::LogSuccess("test_AhoCorasickDFA");
     }
 
     return true;

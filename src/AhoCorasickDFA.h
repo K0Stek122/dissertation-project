@@ -4,10 +4,11 @@
 #include <string>
 #include <queue>
 
-typedef struct {
+struct FoundString{
+    bool operator==(const FoundString& rhs) const;
     int pos;
     std::string val;
-} FoundString;
+};
 
 class Node {
 private:

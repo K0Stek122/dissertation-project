@@ -1,5 +1,9 @@
 #include "AhoCorasickDFA.h"
 
+bool FoundString::operator==(const FoundString& rhs) const {
+    return this->pos == rhs.pos && this->val == rhs.val;
+}
+
 bool Node::hasChild(const char &key) {
     if (this->children.count(key)) {
         return true;

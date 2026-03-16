@@ -1,0 +1,6 @@
+class Sink {
+public:
+    Sink();
+
+    
+};
