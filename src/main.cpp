@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <optional>
+#include <arpa/inet.h>
 
 #include "pcapplusplus/include/PcapLiveDeviceList.h"
 #include "pcapplusplus/include/PcapLiveDevice.h"
@@ -10,21 +11,17 @@
 #include "pcapplusplus/include/Packet.h"
 
 #include "tests/tests.h"
-
 #include "args/args.hxx"
 
 #include "PacketEvent.h"
 #include "Sniffer.h"
 #include "PacketCapture.h"
 #include "PacketFilter.h"
-#include <arpa/inet.h>
+#include "AhoCorasickDFA.h"
+#include "AppOptions.h"
+#include "Sink.h"
 
-struct AppOptions {
-    bool verbose = false;
-    bool test = true;
-} app_options;
-
-bool setup_arguments(const int& argc, char** argv) {
+bool ArgParse(const int& argc, char** argv) {
     args::ArgumentParser parser(
         "RegSpy",
         "A finite-automata, pattern-based IDS solution for containerised environments."
@@ -51,6 +48,13 @@ bool setup_arguments(const int& argc, char** argv) {
         {'h', "help"}
     );
     
+    args::ValueFlag<std::string> device(
+        parser,
+        "device",
+        "Specify the network interface to listen on.",
+        {'d', "device"}
+    );
+    
     args::CompletionFlag completion(parser, {"complete"}); // Tells the argument parser to stop looking for arguments.
 
     try {
@@ -67,8 +71,9 @@ bool setup_arguments(const int& argc, char** argv) {
         return true;
     }
     
-    app_options.verbose = verbose;
-    app_options.test = test;
+    g_app_options.verbose = verbose.Get();
+    g_app_options.test = test.Get();
+    g_app_options.device = device.Get();
 
     return true;
 }
@@ -83,6 +88,7 @@ This is a very simple implementation. The next step is to implement a few more t
 
 */
 void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
+    std::cout << "huh???" << std::endl;
     if (!packet || !device) {
         return;
     }
@@ -91,28 +97,26 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
     p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
 
     PacketCapture p_capture;
-    p_capture.add_filter(p_filter);
-
-    //p_capture.add_filter(p_filter);
-    std::optional<PacketEvent> captured_packet = p_capture.capture(packet);
-    
-    if (captured_packet.has_value()) {
-        std::cout << captured_packet.value().flow.dstIp << std::endl;
+    if (g_app_options.verbose) {
+        std::cout << "Listening!" << std::endl;
     }
+
+    //Sink sink = Sink(p_filter, p_capture);
+    
+    //sink.Run(packet, device, cookie);
 }
 
 int main(int argc, char** argv) {
-    
-    if (!setup_arguments(argc, argv)) {
+    if (!ArgParse(argc, argv)) {
         std::cout << "error: Could not setup command-line arguments. Exiting..." << std::endl;
         return 1;
     }
 
-    if (app_options.verbose) {
+    if (g_app_options.verbose) {
         std::cout << "info: Verbose flag detected" << std::endl;
     }
     
-    if (app_options.test) {
+    if (g_app_options.test) {
         TestCase::test_PCapturePacketCapture_dstIp();
         TestCase::test_PCapturePacketCapture_srcIp();
         TestCase::test_SnifferStart();
@@ -122,9 +126,17 @@ int main(int argc, char** argv) {
     }
 
     Sniffer sniffer;
-    sniffer.start(onPacketArrive, "wlp0s20f3", "tcp");
+    if (!sniffer.start(onPacketArrive, g_app_options.device, "tcp")) {
+        std::cout << "error: Failed to start the interface with device: " << g_app_options.device << std::endl;
+        return 0;
+    }
+
+    if (g_app_options.verbose) {
+        std::cout << "info: started listening on device: " << g_app_options.device << std::endl;
+    }
     while (true) {
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
+
     sniffer.stop();
 }

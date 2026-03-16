@@ -29,7 +29,9 @@ bool Sniffer::start(pcpp::OnPacketArrivesCallback onPacketArrive, std::string de
     }
     
     pcap_dev->setFilter(filter);
-    pcap_dev->startCapture(onPacketArrive, nullptr);
+    if (!pcap_dev->startCapture(onPacketArrive, nullptr)) {
+        return false;
+    }
 
     return true;
 }

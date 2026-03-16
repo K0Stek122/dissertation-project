@@ -4,6 +4,9 @@
 #include <string>
 #include <queue>
 
+#ifndef AHOCORASICKDFA_H
+#define AHOCORASICKDFA_H
+
 struct FoundString{
     bool operator==(const FoundString& rhs) const;
     int pos;
@@ -38,3 +41,5 @@ public:
     
     std::vector<FoundString> search(const std::string& text);
 };
+
+#endif
