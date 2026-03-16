@@ -88,7 +88,6 @@ This is a very simple implementation. The next step is to implement a few more t
 
 */
 void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
-    std::cout << "huh???" << std::endl;
     if (!packet || !device) {
         return;
     }
@@ -97,13 +96,11 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
     p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
 
     PacketCapture p_capture;
-    if (g_app_options.verbose) {
-        std::cout << "Listening!" << std::endl;
-    }
+    p_capture.add_filter(p_filter);
 
-    //Sink sink = Sink(p_filter, p_capture);
+    Sink sink = Sink(p_filter, p_capture);
     
-    //sink.Run(packet, device, cookie);
+    sink.Run(packet, device, cookie);
 }
 
 int main(int argc, char** argv) {

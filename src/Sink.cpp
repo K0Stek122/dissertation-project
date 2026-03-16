@@ -6,7 +6,6 @@ Sink::Sink(PacketFilter &p_filter, PacketCapture &p_capture) {
 }
 
 bool Sink::Run(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
-    std::cout << "Huj" << std::endl;
     std::optional<PacketEvent> captured_packet = this->p_capture.capture(packet);
     if (!captured_packet.has_value()) {
         return false;
