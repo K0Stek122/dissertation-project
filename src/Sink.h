@@ -10,12 +10,11 @@
 
 class Sink {
 private:
-    PacketFilter p_filter;
     PacketCapture p_capture;
 
 private:
 public:
-    Sink(PacketFilter& p_filter, PacketCapture& p_capture);
+    Sink();
 
     bool Run(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie);
 };

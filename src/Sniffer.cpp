@@ -8,7 +8,12 @@ Sniffer::~Sniffer() {
 
 }
 
-bool Sniffer::start(pcpp::OnPacketArrivesCallback onPacketArrive, std::string device_name, std::string filter) {
+bool Sniffer::start(
+    pcpp::OnPacketArrivesCallback onPacketArrive,
+    std::string device_name,
+    std::string filter,
+    void* cookie
+) {
     pcpp::PcapLiveDevice* dev;
     if (device_name.empty()) {
         auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
@@ -29,7 +34,7 @@ bool Sniffer::start(pcpp::OnPacketArrivesCallback onPacketArrive, std::string de
     }
     
     pcap_dev->setFilter(filter);
-    if (!pcap_dev->startCapture(onPacketArrive, nullptr)) {
+    if (!pcap_dev->startCapture(onPacketArrive, cookie)) {
         return false;
     }
 

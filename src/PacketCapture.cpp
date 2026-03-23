@@ -1,5 +1,7 @@
 #include "PacketCapture.h"
 
+#include <set>
+
 std::string PacketCapture::get_tcp_flags(pcpp::TcpLayer* tcpLayer) {
     std::string result = "";
 
@@ -12,16 +14,33 @@ std::string PacketCapture::get_tcp_flags(pcpp::TcpLayer* tcpLayer) {
     if (tcpLayer->getTcpHeader()->rstFlag == 1) result += "RST ";
     if (tcpLayer->getTcpHeader()->finFlag == 1) result += "FIN ";
 
-    if (tcpLayer->getTcpHeader()->synFlag == 1) result += "SYN ";
-    if (tcpLayer->getTcpHeader()->ackFlag == 1) result += "ACK ";
-    if (tcpLayer->getTcpHeader()->pshFlag == 1) result += "PSH ";
-    if (tcpLayer->getTcpHeader()->cwrFlag == 1) result += "CWR ";
-    if (tcpLayer->getTcpHeader()->urgFlag == 1) result += "URG ";
-    if (tcpLayer->getTcpHeader()->eceFlag == 1) result += "ECE ";
-    if (tcpLayer->getTcpHeader()->rstFlag == 1) result += "RST ";
-    if (tcpLayer->getTcpHeader()->finFlag == 1) result += "FIN ";
-
     return result;
+}
+
+std::vector<std::string> PacketCapture::build_filter_patterns(const PacketFilter& f) const {
+    std::vector<std::string> patterns;
+
+    if (f.srcIp) {
+        patterns.push_back("srcIp=" + f.srcIp->toString() + ";");
+    }
+    if (f.dstIp) {
+        patterns.push_back("dstIp=" + f.dstIp->toString() + ";");
+    }
+    if (f.srcPort) {
+        patterns.push_back("srcPort=" + std::to_string(f.srcPort.value()) + ";");
+    }
+    if (f.dstPort) {
+        patterns.push_back("dstPort=" + std::to_string(f.dstPort.value()) + ";");
+    }
+
+    return patterns;
+}
+
+std::string PacketCapture::serialize_packet_event(const PacketEvent& e) const {
+    return "srcIp=" + e.flow.srcIp.toString() + ";" +
+        "dstIp=" + e.flow.dstIp.toString() + ";" +
+        "srcPort=" + std::to_string(e.flow.srcPort) + ";" +
+        "dstPort=" + std::to_string(e.flow.dstPort) + ";";
 }
 
 void PacketCapture::get_packet_metadata(PacketEvent& e, pcpp::IPv4Layer* ipLayer, pcpp::TcpLayer* tcpLayer) {
@@ -90,13 +109,34 @@ bool PacketCapture::process_packet_backlog() {
 int PacketCapture::add_filter(PacketFilter packet_filter)
 {
     this->packet_filter = packet_filter;
+
+    const auto patterns = this->build_filter_patterns(packet_filter);
+    if (patterns.empty()) {
+        this->filter_matcher.reset();
+    } else {
+        this->filter_matcher.emplace(patterns);
+    }
+
     return 0;
 }
 
 bool PacketCapture::matches_pattern(const PacketEvent& p, const PacketFilter& f) {
-    if (f.srcIp && p.flow.srcIp.toInt() != f.srcIp.value().toInt()) return false;
-    if (f.dstIp && p.flow.dstIp.toInt() != f.dstIp.value().toInt()) return false;
-    if (f.srcPort && p.flow.srcPort != f.srcPort.value()) return false;
-    if (f.dstPort && p.flow.dstPort != f.dstPort.value()) return false;
-    return true;
+    const auto patterns = this->build_filter_patterns(f);
+    if (patterns.empty()) {
+        return true;
+    }
+
+    if (!this->filter_matcher.has_value()) {
+        this->filter_matcher.emplace(patterns);
+    }
+
+    const std::string packet_text = this->serialize_packet_event(p);
+    const auto matches = this->filter_matcher->search(packet_text);
+
+    std::set<std::string> matched_tokens;
+    for (const auto& m : matches) {
+        matched_tokens.insert(m.val);
+    }
+
+    return matched_tokens.size() == patterns.size();
 }

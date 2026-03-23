@@ -1,8 +1,9 @@
 #include "Sink.h"
 
-Sink::Sink(PacketFilter &p_filter, PacketCapture &p_capture) {
-    this->p_filter = p_filter;
-    this->p_capture = p_capture;
+Sink::Sink() {
+    PacketFilter p_filter;
+    p_filter.dstIp = pcpp::IPv4Address("151.101.1.91");
+    this->p_capture.add_filter(p_filter);
 }
 
 bool Sink::Run(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {

@@ -88,19 +88,11 @@ This is a very simple implementation. The next step is to implement a few more t
 
 */
 void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
-    if (!packet || !device) {
+    if (!packet || !device || cookie == nullptr) {
         return;
     }
-
-    PacketFilter p_filter;
-    p_filter.dstIp = pcpp::IPv4Address("10.58.119.69");
-
-    PacketCapture p_capture;
-    p_capture.add_filter(p_filter);
-
-    Sink sink = Sink(p_filter, p_capture);
-    
-    sink.Run(packet, device, cookie);
+    Sink* sink = static_cast<Sink*>(cookie);
+    sink->Run(packet, device, cookie);
 }
 
 int main(int argc, char** argv) {
@@ -122,8 +114,11 @@ int main(int argc, char** argv) {
         return 0;
     }
 
+    // Create persistent Sink with filter
+    Sink sink;
+
     Sniffer sniffer;
-    if (!sniffer.start(onPacketArrive, g_app_options.device, "tcp")) {
+    if (!sniffer.start(onPacketArrive, g_app_options.device, "tcp", &sink)) {
         std::cout << "error: Failed to start the interface with device: " << g_app_options.device << std::endl;
         return 0;
     }

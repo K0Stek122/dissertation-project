@@ -15,7 +15,12 @@ private:
 public:
     Sniffer();
     ~Sniffer();
-    
-    bool start(pcpp::OnPacketArrivesCallback onPacketArrive, std::string device_name, std::string filter);
+
+    bool start(
+        pcpp::OnPacketArrivesCallback onPacketArrive,
+        std::string device_name,
+        std::string filter,
+        void* cookie = nullptr
+    );
     void stop();
 };
