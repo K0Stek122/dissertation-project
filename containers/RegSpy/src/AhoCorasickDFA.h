@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <queue>
+#include <memory>
 
 #ifndef AHOCORASICKDFA_H
 #define AHOCORASICKDFA_H
@@ -16,7 +17,7 @@ struct FoundString{
 class Node {
 private:
 public:
-    std::map<char, Node*> children;
+    std::map<char, std::unique_ptr<Node>> children;
     Node* failureLink = nullptr;
     std::set<std::string> outputs;
     
@@ -25,7 +26,7 @@ private:
 public:
     bool hasChild(const char& key);
     Node* getChild(const char& key);
-    void setChild(const char &key, Node* node);
+    void setChild(const char &key, std::unique_ptr<Node> node);
     void addOutput(const std::string& output);
     void copyOutputs(const Node& node);
     

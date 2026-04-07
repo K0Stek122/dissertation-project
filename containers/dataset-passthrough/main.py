@@ -27,4 +27,9 @@ def setup_arguments():
 if __name__ == "__main__":
     args = setup_arguments()
     
-    
+    with open(args.input, 'r') as f:
+        data = f.read()
+    print(f"Dataset Type: {args.dataset_type}")
+    print("Dataset Content:")
+    print(data)
+         

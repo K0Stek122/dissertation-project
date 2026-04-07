@@ -15,13 +15,13 @@ bool Node::hasChild(const char &key) {
 Node* Node::getChild(const char &key) {
     auto it = this->children.find(key);
     if (it != this->children.end()) {
-        return it->second;
+        return it->second.get();
     }
     return nullptr;
 }
 
-void Node::setChild(const char &key, Node* node) {
-    this->children[key] = node;
+void Node::setChild(const char &key, std::unique_ptr<Node> node) {
+    this->children[key] = std::move(node);
 }
 
 void Node::addOutput(const std::string& output) {
@@ -45,7 +45,7 @@ AhoCorasick::AhoCorasick(std::vector<std::string> patterns) {
         for (auto ch : pattern) {
             char key = ch;
             if (!currNode->hasChild(key)) {
-                currNode->setChild(key, new Node());
+                currNode->setChild(key, std::unique_ptr<Node>(new Node()));
             }
             currNode = currNode->getChild(key);
         }
@@ -57,21 +57,21 @@ AhoCorasick::AhoCorasick(std::vector<std::string> patterns) {
     this->root.failureLink = &this->root; // Fallback on failure link
     std::queue<Node*> queue;
     
-    for (auto child : this->root.children) {
+    for (auto& child : this->root.children) {
         // child.first is the key (char)
         // child.second is the value (Node*)
         child.second->failureLink = &this->root;
-        queue.push(child.second);
+        queue.push(child.second.get());
     }
     
     while (queue.size() != 0) {
         currNode = queue.front();
         queue.pop();
         
-        for (auto child : currNode->children) {
+        for (auto& child : currNode->children) {
             //child.first is the key (char)
             //child.second is the value (Node*)
-            queue.push(child.second);
+            queue.push(child.second.get());
             Node* n = currNode->failureLink;
             while (n != &this->root and !n->hasChild(child.first)) {
                 n = n->failureLink;
