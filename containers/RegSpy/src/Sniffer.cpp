@@ -17,6 +17,9 @@ bool Sniffer::start(
     pcpp::PcapLiveDevice* dev;
     if (device_name.empty()) {
         auto devices = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
+        if (devices.empty()) {
+            return false;
+        }
         dev = pcpp::PcapLiveDeviceList::getInstance().getDeviceByName(devices[0]->getName());
         
     } else {

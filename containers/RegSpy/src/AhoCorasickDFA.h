@@ -1,3 +1,6 @@
+#ifndef AHOCORASICKDFA_H
+#define AHOCORASICKDFA_H
+
 #include <map>
 #include <vector>
 #include <set>
@@ -5,8 +8,6 @@
 #include <queue>
 #include <memory>
 
-#ifndef AHOCORASICKDFA_H
-#define AHOCORASICKDFA_H
 
 struct FoundString{
     bool operator==(const FoundString& rhs) const;
@@ -29,8 +30,6 @@ public:
     void setChild(const char &key, std::unique_ptr<Node> node);
     void addOutput(const std::string& output);
     void copyOutputs(const Node& node);
-    
-    bool operator<(const Node& other) const;
 };
 
 class AhoCorasick {

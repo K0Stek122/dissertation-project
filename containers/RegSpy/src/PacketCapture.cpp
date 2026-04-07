@@ -60,10 +60,6 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
      * Converts pcpp::RawPacket into a PacketEvent for our packet capture.
      * pcpp::RawPacket* is modified in pcpp::Packet therefore cannot be a constant reference.
      */
-    /*
-     * Converts pcpp::RawPacket into a PacketEvent for our packet capture.
-     * pcpp::RawPacket* is modified in pcpp::Packet therefore cannot be a constant reference.
-     */
     PacketEvent event;
     
     pcpp::Packet parsed_packet(packet);
@@ -98,6 +94,11 @@ bool PacketCapture::process_packet_backlog() {
     while (!this->packet_backlog.empty()) {
         PacketEvent current_packet_event = this->packet_backlog.front();
         this->packet_backlog.pop_front();
+
+        if (!this->packet_filter.has_value()) {
+            return false;
+        }
+
         if (this->matches_pattern(current_packet_event, this->packet_filter.value())) {
             //DO stuff to the packet here.
             return true;

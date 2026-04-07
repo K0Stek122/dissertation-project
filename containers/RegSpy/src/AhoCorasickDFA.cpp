@@ -34,10 +34,6 @@ void Node::copyOutputs(const Node &node) {
     }
 }
 
-bool Node::operator<(const Node& other) const {
-    return this < &other;
-}
-
 AhoCorasick::AhoCorasick(std::vector<std::string> patterns) {
     // COnstruct the Trie
     Node* currNode = &this->root;
