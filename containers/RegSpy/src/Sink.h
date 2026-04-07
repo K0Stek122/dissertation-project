@@ -1,20 +1,20 @@
-#include <optional>
+#pragma once
 
-#include "pcapplusplus/include/PcapLiveDeviceList.h"
 #include "pcapplusplus/include/PcapLiveDevice.h"
-#include "pcapplusplus/include/SystemUtils.h"
-#include "pcapplusplus/include/Packet.h"
+#include "pcapplusplus/include/RawPacket.h"
 
-#include "PacketFilter.h"
 #include "PacketCapture.h"
+#include "Detector.h"
+#include "OutputManager.h"
 
 class Sink {
 private:
     PacketCapture p_capture;
+    Detector& detector;
+    OutputManager& output;
 
-private:
 public:
-    Sink();
+    Sink(Detector& detector, OutputManager& output);
 
     bool Run(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie);
 };

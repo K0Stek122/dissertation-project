@@ -1,39 +1,38 @@
 #include <iostream>
-#include <vector>
+#include <atomic>
 #include <chrono>
 #include <thread>
-#include <optional>
-#include <arpa/inet.h>
+#include <csignal>
 
-#include "pcapplusplus/include/PcapLiveDeviceList.h"
 #include "pcapplusplus/include/PcapLiveDevice.h"
-#include "pcapplusplus/include/SystemUtils.h"
-#include "pcapplusplus/include/Packet.h"
+#include "pcapplusplus/include/RawPacket.h"
 
 #include "tests/tests.h"
 #include "args/args.hxx"
 
+#include "AppOptions.h"
+#include "Config.h"
 #include "PacketEvent.h"
 #include "Sniffer.h"
-#include "PacketCapture.h"
-#include "PacketFilter.h"
-#include "AhoCorasickDFA.h"
-#include "AppOptions.h"
 #include "Sink.h"
+#include "Detector.h"
+#include "OutputManager.h"
+
+static std::atomic<bool> g_running{true};
 
 bool ArgParse(const int& argc, char** argv) {
     args::ArgumentParser parser(
         "RegSpy",
         "A finite-automata, pattern-based IDS solution for containerised environments."
     );
-    
+
     args::Flag verbose(
         parser,
         "verbose",
         "Log all the progress of the app.",
         {'v', "verbose"}
     );
-    
+
     args::Flag test(
         parser,
         "test",
@@ -47,15 +46,22 @@ bool ArgParse(const int& argc, char** argv) {
         "Display this help menu.",
         {'h', "help"}
     );
-    
+
     args::ValueFlag<std::string> device(
         parser,
         "device",
         "Specify the network interface to listen on.",
         {'d', "device"}
     );
-    
-    args::CompletionFlag completion(parser, {"complete"}); // Tells the argument parser to stop looking for arguments.
+
+    args::ValueFlag<std::string> config(
+        parser,
+        "config",
+        "Path to the YAML config file.",
+        {'c', "config"}
+    );
+
+    args::CompletionFlag completion(parser, {"complete"});
 
     try {
         parser.ParseCLI(argc, argv);
@@ -70,23 +76,15 @@ bool ArgParse(const int& argc, char** argv) {
         std::cerr << parser;
         return true;
     }
-    
-    g_app_options.verbose = verbose.Get();
-    g_app_options.test = test.Get();
-    g_app_options.device = device.Get();
+
+    g_app_options.verbose     = verbose.Get();
+    g_app_options.test        = test.Get();
+    g_app_options.device      = device.Get();
+    g_app_options.config_file = config.Get();
 
     return true;
 }
 
-/*
-This is a very simple implementation. The next step is to implement a few more things. We need to do the following:
-- Capture - Capture the packets with the eBPF filter and network devices.
-- Decode - Turn the raw packets into structured events that we can properly analyse
-- Detect - Detect the packets with pluggable extendable detectors
-- Output - Pluggable functions like output to JSON, SQLite, or Message queues.
-- Config - Self explanatory.
-
-*/
 void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
     if (!packet || !device || cookie == nullptr) {
         return;
@@ -97,14 +95,9 @@ void onPacketArrive(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void*
 
 int main(int argc, char** argv) {
     if (!ArgParse(argc, argv)) {
-        std::cout << "error: Could not setup command-line arguments. Exiting..." << std::endl;
         return 1;
     }
 
-    if (g_app_options.verbose) {
-        std::cout << "info: Verbose flag detected" << std::endl;
-    }
-    
     if (g_app_options.test) {
         TestCase::test_PCapturePacketCapture_dstIp();
         TestCase::test_PCapturePacketCapture_srcIp();
@@ -114,21 +107,47 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    // Create persistent Sink with filter
-    Sink sink;
+    // Load config file, then apply CLI overrides on top
+    AppConfig cfg;
+    if (!g_app_options.config_file.empty()) {
+        try {
+            cfg = load_config(g_app_options.config_file);
+        } catch (const std::exception& e) {
+            std::cerr << "error: " << e.what() << std::endl;
+            return 1;
+        }
+    }
+
+    if (!g_app_options.device.empty()) cfg.device  = g_app_options.device;
+    if (g_app_options.verbose)         cfg.verbose = true;
+
+    if (cfg.verbose) {
+        std::cout << "info: loaded " << cfg.rules.size() << " rule(s)" << std::endl;
+    }
+
+    Detector detector(cfg.rules);
+    OutputManager output(cfg);
+    Sink sink(detector, output);
+
+    signal(SIGINT,  [](int){ g_running = false; });
+    signal(SIGTERM, [](int){ g_running = false; });
 
     Sniffer sniffer;
-    if (!sniffer.start(onPacketArrive, g_app_options.device, "tcp", &sink)) {
-        std::cout << "error: Failed to start the interface with device: " << g_app_options.device << std::endl;
-        return 0;
+    if (!sniffer.start(onPacketArrive, cfg.device, "tcp", &sink)) {
+        std::cerr << "error: Failed to start capture on device: "
+                  << (cfg.device.empty() ? "(default)" : cfg.device) << std::endl;
+        return 1;
     }
 
-    if (g_app_options.verbose) {
-        std::cout << "info: started listening on device: " << g_app_options.device << std::endl;
+    if (cfg.verbose) {
+        std::cout << "info: listening on device: "
+                  << (cfg.device.empty() ? "(default)" : cfg.device) << std::endl;
     }
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+
+    while (g_running) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     sniffer.stop();
+    return 0;
 }

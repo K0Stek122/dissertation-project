@@ -1,18 +1,20 @@
 #include "Sink.h"
 
-Sink::Sink() {
-    PacketFilter p_filter;
-    p_filter.dstIp = pcpp::IPv4Address("151.101.1.91");
-    this->p_capture.add_filter(p_filter);
+Sink::Sink(Detector& detector, OutputManager& output)
+    : detector(detector), output(output)
+{
 }
 
-bool Sink::Run(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* device, void* cookie) {
-    std::optional<PacketEvent> captured_packet = this->p_capture.capture(packet);
-    if (!captured_packet.has_value()) {
+bool Sink::Run(pcpp::RawPacket* packet, [[maybe_unused]] pcpp::PcapLiveDevice* device, [[maybe_unused]] void* cookie) {
+    std::optional<PacketEvent> captured = this->p_capture.capture(packet);
+    if (!captured.has_value()) {
         return false;
     }
-    
-    std::cout << captured_packet.value().flow.dstIp << std::endl;
+
+    const std::vector<Alert> alerts = this->detector.detect(captured.value());
+    for (const auto& alert : alerts) {
+        this->output.emit(alert);
+    }
 
     return true;
 }

@@ -47,12 +47,18 @@ void PacketCapture::get_packet_metadata(PacketEvent& e, pcpp::IPv4Layer* ipLayer
     e.flow.dstIp = ipLayer->getDstIPv4Address();
     e.flow.srcIp = ipLayer->getSrcIPv4Address();
 
-    e.ipHeader.checksum = ipLayer->getIPv4Header()->headerChecksum;
+    e.ipHeader.checksum   = ipLayer->getIPv4Header()->headerChecksum;
     e.ipHeader.timeToLive = ipLayer->getIPv4Header()->timeToLive;
 
     e.flow.srcPort = tcpLayer->getSrcPort();
     e.flow.dstPort = tcpLayer->getDstPort();
-    e.tcpFlags = this->get_tcp_flags(tcpLayer);
+    e.tcpFlags     = this->get_tcp_flags(tcpLayer);
+
+    const uint8_t* payload_data = tcpLayer->getLayerPayload();
+    size_t payload_len           = tcpLayer->getLayerPayloadSize();
+    if (payload_data && payload_len > 0) {
+        e.payload.assign(payload_data, payload_data + payload_len);
+    }
 }
 
 PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
@@ -61,50 +67,33 @@ PacketEvent PacketCapture::cast_packet(pcpp::RawPacket* packet) {
      * pcpp::RawPacket* is modified in pcpp::Packet therefore cannot be a constant reference.
      */
     PacketEvent event;
-    
+
     pcpp::Packet parsed_packet(packet);
-    
+    event.length = static_cast<std::size_t>(packet->getRawDataLen());
+    event.timestamp = std::chrono::system_clock::now();
+
     pcpp::IPv4Layer* ipLayer = parsed_packet.getLayerOfType<pcpp::IPv4Layer>();
     pcpp::TcpLayer* tcpLayer = parsed_packet.getLayerOfType<pcpp::TcpLayer>();
-    if (ipLayer == NULL || tcpLayer == NULL) { // Packet is invalid. Need to return an empty event.
+    if (ipLayer == nullptr || tcpLayer == nullptr) {
         return event;
     }
 
     this->get_packet_metadata(event, ipLayer, tcpLayer);
-    
+
     return event;
 }
 
 std::optional<PacketEvent> PacketCapture::capture(pcpp::RawPacket* raw_packet) {
     PacketEvent packet = this->cast_packet(raw_packet);
     if (!this->packet_filter.has_value()) {
-        this->packet_backlog.push_back(packet);
         return packet;
     }
 
     if (this->matches_pattern(packet, this->packet_filter.value())) {
-        this->packet_backlog.push_back(packet);
         return packet;
-    } else {
-        return std::nullopt;
     }
-}
 
-bool PacketCapture::process_packet_backlog() {
-    while (!this->packet_backlog.empty()) {
-        PacketEvent current_packet_event = this->packet_backlog.front();
-        this->packet_backlog.pop_front();
-
-        if (!this->packet_filter.has_value()) {
-            return false;
-        }
-
-        if (this->matches_pattern(current_packet_event, this->packet_filter.value())) {
-            //DO stuff to the packet here.
-            return true;
-        }
-    }
-    return false;
+    return std::nullopt;
 }
 
 int PacketCapture::add_filter(PacketFilter packet_filter)

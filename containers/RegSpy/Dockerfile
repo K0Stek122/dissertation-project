@@ -1,25 +1,25 @@
-# use docker build -t 'tag' . to build this container.
-# then use docker images to list images
-# docker run -d -p 128.0.0.1:3000:3000 tag_name to run the container
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
-WORKDIR /docker
+WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     g++ \
-    libcpprest-dev \
-    libboost-all-dev \
-    libssl-dev \
     libpcap-dev \
-    cmake
-    
-RUN rm -rf /var/lib/apt/lists/*
+    libsqlite3-dev \
+    libyaml-cpp-dev \
+    cmake \
+    git \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY src/ src/
 COPY CMakeLists.txt .
 
-RUN cmake -S . -B build \
-&& cmake --build build --config Release
+RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build --config Release
 
-CMD [ "build/ids-dissertation", "-h" ]
-EXPOSE 3000
+RUN mkdir -p /var/log/regspy /etc/regspy
+
+COPY config.yaml /etc/regspy/config.yaml
+
+CMD ["build/ids-dissertation", "--config", "/etc/regspy/config.yaml"]

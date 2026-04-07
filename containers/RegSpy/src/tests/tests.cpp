@@ -11,9 +11,7 @@ void Log::LogSuccess(const std::string& information) {
 
 bool TestCase::test_SnifferStart() {
     Sniffer sniffer;
-    // Using this particular interface definitely WON'T cause problems...
-    // fIx this later on.
-    if (!sniffer.start(nullptr, "wlp0s20f3", "tcp")) {
+    if (!sniffer.start(nullptr, "", "tcp")) {
         Log::LogFailure("test_SnifferStart", "sniffer.start() == true");
         sniffer.stop();
         return false;
@@ -22,7 +20,6 @@ bool TestCase::test_SnifferStart() {
         sniffer.stop();
         return true;
     }
-    
 }
 
 bool TestCase::test_PCapturePacketCapture_srcIp() {
@@ -31,9 +28,7 @@ bool TestCase::test_PCapturePacketCapture_srcIp() {
     pcpp::RawPacket* mock_packet = new pcpp::RawPacket(packet_data, sizeof(packet_data), tv, false);
     PacketCapture p_capture;
     std::optional<PacketEvent> captured_packet = p_capture.capture(mock_packet);
-    // Assuming srcIp is a string or has toString()
     std::string srcIpStr = captured_packet.value().flow.srcIp.toString();
-    // If srcIp is not a string, use: captured_packet.flow.srcIp.toString()
     if (srcIpStr != "0.0.0.0") {
         Log::LogFailure("test_PCapturePacketCapture_srcIp", srcIpStr + " != 0.0.0.0");
         delete mock_packet;
@@ -71,66 +66,50 @@ bool TestCase::test_AhoCorasickNode_functions() {
         Log::LogFailure("test_AhoCorasickNode_functions", "hasChild('a') == false on empty node");
         return false;
     }
-    
-    // Test setChild and getChild
-    Node* child = new Node();
-    node.setChild('a', child);
+
+    // Test setChild and getChild — node takes ownership via unique_ptr
+    Node* child_a_ptr = new Node();
+    node.setChild('a', std::unique_ptr<Node>(child_a_ptr));
     if (!node.hasChild('a')) {
         Log::LogFailure("test_AhoCorasickNode_functions", "hasChild('a') == true after setChild");
-        delete child;
         return false;
     }
-    
-    if (node.getChild('a') != child) {
+
+    if (node.getChild('a') != child_a_ptr) {
         Log::LogFailure("test_AhoCorasickNode_functions", "getChild('a') returns correct child");
-        delete child;
         return false;
     }
-    
+
     // Test setChild with multiple children
-    Node* child_b = new Node();
-    node.setChild('b', child_b);
+    node.setChild('b', std::make_unique<Node>());
     if (!node.hasChild('b')) {
         Log::LogFailure("test_AhoCorasickNode_functions", "hasChild('b') == true after setChild");
-        delete child;
-        delete child_b;
         return false;
     }
-    
+
     // Test addOutput
-    Node output_node = Node();
     node.addOutput("test_output");
     if (node.outputs.empty()) {
         Log::LogFailure("test_AhoCorasickNode_functions", "addOutput adds output to set");
-        delete child;
-        delete child_b;
         return false;
     }
-    
+
     // Test copyOutputs
-    Node target_node = Node();
+    Node target_node;
     target_node.copyOutputs(node);
     if (target_node.outputs.size() != node.outputs.size()) {
         Log::LogFailure("test_AhoCorasickNode_functions", "copyOutputs copies all outputs");
-        delete child;
-        delete child_b;
         return false;
     }
-    
+
     // Test failureLink initialization
     if (node.failureLink != nullptr) {
         Log::LogFailure("test_AhoCorasickNode_functions", "failureLink initialized to nullptr");
-        delete child;
-        delete child_b;
         return false;
     }
-    
-    delete child;
-    delete child_b;
+
     Log::LogSuccess("test_AhoCorasickNode_functions");
     return true;
-    
-
 }
 
 bool TestCase::test_AhoCorasickDFA()
@@ -139,7 +118,7 @@ bool TestCase::test_AhoCorasickDFA()
     std::string text = "i am eating meat";
     auto machine = AhoCorasick(text_to_search_for);
     auto result = machine.search(text);
-    
+
     std::vector<FoundString> expected_result = {
         {5, "eat"},
         {8, "in"},
@@ -147,11 +126,12 @@ bool TestCase::test_AhoCorasickDFA()
         {13, "eat"},
         {12, "meat"}
     };
+
     if (expected_result != result) {
         Log::LogFailure("test_AhoCorasickDFA", "expected_result != result");
-    } else {
-        Log::LogSuccess("test_AhoCorasickDFA");
+        return false;
     }
 
+    Log::LogSuccess("test_AhoCorasickDFA");
     return true;
 }

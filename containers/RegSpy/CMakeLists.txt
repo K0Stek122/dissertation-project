@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.11.0)
 project(ids-dissertation VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -10,19 +10,27 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# ── Dependencies ──────────────────────────────────────────────────────────────
+find_package(yaml-cpp REQUIRED)
+find_package(SQLite3 REQUIRED)
+
+# ── Sources ───────────────────────────────────────────────────────────────────
 file(GLOB SOURCES "src/*.cpp" "src/tests/*.cpp")
 add_executable(ids-dissertation ${SOURCES})
 
+# ── pcap++ ────────────────────────────────────────────────────────────────────
 target_include_directories(ids-dissertation PRIVATE ${CMAKE_SOURCE_DIR}/src/pcapplusplus/include)
 set(PCPP_LIB_DIR "${CMAKE_SOURCE_DIR}/src/pcapplusplus/lib/")
-find_library(PCPP_PCAP NAMES pcap++ Pcap++ PATHS ${PCPP_LIB_DIR} REQUIRED)
+find_library(PCPP_PCAP   NAMES pcap++   Pcap++   PATHS ${PCPP_LIB_DIR} REQUIRED)
 find_library(PCPP_PACKET NAMES packet++ Packet++ PATHS ${PCPP_LIB_DIR} REQUIRED)
 find_library(PCPP_COMMON NAMES common++ Common++ PATHS ${PCPP_LIB_DIR} REQUIRED)
 
 target_link_libraries(ids-dissertation PRIVATE
-    ${PCPP_PCAP} 
+    ${PCPP_PCAP}
     ${PCPP_PACKET}
-    ${PCPP_COMMON} 
+    ${PCPP_COMMON}
     pcap
     pthread
+    yaml-cpp
+    SQLite::SQLite3
 )

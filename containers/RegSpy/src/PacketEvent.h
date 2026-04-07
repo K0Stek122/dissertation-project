@@ -3,13 +3,13 @@
 #include <string>
 #include <cstdint>
 #include <chrono>
+#include <vector>
 
 #include "pcapplusplus/include/PcapLiveDeviceList.h"
 #include "pcapplusplus/include/PcapLiveDevice.h"
 #include "pcapplusplus/include/SystemUtils.h"
 #include "pcapplusplus/include/Packet.h"
 #include "pcapplusplus/include/IPv4Layer.h"
-#include "PacketEvent.h"
 
 // HEADER ONLY
 
@@ -32,6 +32,7 @@ struct PacketEvent {
     Flow flow;
     IPHeader ipHeader;
     std::size_t length = 0;
-    std::chrono::system_clock::time_point timestamp = {}; // This returns the system clock at which point the packet arrived.
+    std::chrono::system_clock::time_point timestamp = {};
     std::string tcpFlags = "";
+    std::vector<uint8_t> payload;
 };

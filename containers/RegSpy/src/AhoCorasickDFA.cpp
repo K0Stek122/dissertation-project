@@ -4,7 +4,7 @@ bool FoundString::operator==(const FoundString& rhs) const {
     return this->pos == rhs.pos && this->val == rhs.val;
 }
 
-bool Node::hasChild(const char &key) {
+bool Node::hasChild(const char &key) const {
     if (this->children.count(key)) {
         return true;
     } else {
@@ -12,7 +12,7 @@ bool Node::hasChild(const char &key) {
     }
 }
 
-Node* Node::getChild(const char &key) {
+Node* Node::getChild(const char &key) const {
     auto it = this->children.find(key);
     if (it != this->children.end()) {
         return it->second.get();
@@ -84,7 +84,7 @@ AhoCorasick::AhoCorasick(std::vector<std::string> patterns) {
     }
 }
 
-std::vector<FoundString> AhoCorasick::search(const std::string& text)
+std::vector<FoundString> AhoCorasick::search(const std::string& text) const
 {
     std::vector<FoundString> found = {};
     auto state = &this->root;

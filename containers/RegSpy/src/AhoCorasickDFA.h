@@ -25,8 +25,8 @@ public:
 private:
 
 public:
-    bool hasChild(const char& key);
-    Node* getChild(const char& key);
+    bool hasChild(const char& key) const;
+    Node* getChild(const char& key) const;
     void setChild(const char &key, std::unique_ptr<Node> node);
     void addOutput(const std::string& output);
     void copyOutputs(const Node& node);
@@ -39,7 +39,7 @@ public:
 public:
     AhoCorasick(std::vector<std::string> patterns);
     
-    std::vector<FoundString> search(const std::string& text);
+    std::vector<FoundString> search(const std::string& text) const;
 };
 
 #endif
